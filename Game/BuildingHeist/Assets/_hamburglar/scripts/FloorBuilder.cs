@@ -47,11 +47,11 @@ public class FloorBuilder : MonoBehaviour {
 
         var l_end = GameObject.Instantiate(LeftEnd) as Transform;
         l_end.transform.SetParent(newFloor.transform);
-        l_end.transform.localPosition = Vector3.left * (0.5f * SegmentWidth);
+        l_end.transform.localPosition = Vector3.left * (0.5f * SegmentWidth + (SegmentWidth / 2));
 
         var r_end = GameObject.Instantiate(RightEnd) as Transform;
         r_end.transform.SetParent(newFloor.transform);
-        r_end.transform.localPosition = Vector3.right * (totalRoomSlots * SegmentWidth);
+        r_end.transform.localPosition = Vector3.right * (totalRoomSlots * SegmentWidth );
 
         FloorSegment left_floorSeg = l_end.GetComponent<FloorSegment>();
         FloorSegment right_floorSeg = r_end.GetComponent<FloorSegment>();
