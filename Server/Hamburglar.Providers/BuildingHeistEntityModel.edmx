@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="BuildingHeistModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="dbId" />
+          </Key>
+          <Property Name="dbId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="120" Nullable="false" />
+          <Property Name="Winner" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="GamePlayers">
+          <Key>
+            <PropertyRef Name="GameId" />
+            <PropertyRef Name="PlayerId" />
+          </Key>
+          <Property Name="GameId" Type="int" Nullable="false" />
+          <Property Name="PlayerId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="dbId" />
+          </Key>
+          <Property Name="dbId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="120" Nullable="false" />
+          <Property Name="ProfileImage" Type="nvarchar" MaxLength="120" />
+          <Property Name="Password" Type="nvarchar" MaxLength="120" Nullable="false" />
+          <Property Name="Salt" Type="nvarchar" MaxLength="120" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_GamePlayers_Game">
+          <End Role="Game" Type="Self.Game" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Game">
+              <PropertyRef Name="dbId" />
+            </Principal>
+            <Dependent Role="GamePlayers">
+              <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GamePlayers_Player">
+          <End Role="Player" Type="Self.Player" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GamePlayers" Type="Self.GamePlayers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Player">
+              <PropertyRef Name="dbId" />
+            </Principal>
+            <Dependent Role="GamePlayers">
+              <PropertyRef Name="PlayerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BuildingHeistModelStoreContainer">
+          <EntitySet Name="Game" EntityType="Self.Game" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GamePlayers" EntityType="Self.GamePlayers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Player" EntityType="Self.Player" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_GamePlayers_Game" Association="Self.FK_GamePlayers_Game">
+            <End Role="Game" EntitySet="Game" />
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GamePlayers_Player" Association="Self.FK_GamePlayers_Player">
+            <End Role="Player" EntitySet="Player" />
+            <End Role="GamePlayers" EntitySet="GamePlayers" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BuildingHeistModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="BuildingHeistEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Games" EntityType="BuildingHeistModel.Game" />
+          <EntitySet Name="Players" EntityType="BuildingHeistModel.Player" />
+          <AssociationSet Name="GamePlayers" Association="BuildingHeistModel.GamePlayers">
+            <End Role="Game" EntitySet="Games" />
+            <End Role="Player" EntitySet="Players" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="dbId" />
+          </Key>
+          <Property Name="dbId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Players" Relationship="BuildingHeistModel.GamePlayers" FromRole="Game" ToRole="Player" />
+          <Property Name="Winner" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Player">
+          <Key>
+            <PropertyRef Name="dbId" />
+          </Key>
+          <Property Name="dbId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="true" />
+          <Property Name="ProfileImage" Type="String" MaxLength="120" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="true" />
+          <Property Name="Salt" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Games" Relationship="BuildingHeistModel.GamePlayers" FromRole="Player" ToRole="Game" />
+        </EntityType>
+        <Association Name="GamePlayers">
+          <End Type="BuildingHeistModel.Game" Role="Game" Multiplicity="*" />
+          <End Type="BuildingHeistModel.Player" Role="Player" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BuildingHeistModelStoreContainer" CdmEntityContainer="BuildingHeistEntities">
+          <EntitySetMapping Name="Games">
+            <EntityTypeMapping TypeName="BuildingHeistModel.Game">
+              <MappingFragment StoreEntitySet="Game">
+                <ScalarProperty Name="Winner" ColumnName="Winner" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="dbId" ColumnName="dbId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Players">
+            <EntityTypeMapping TypeName="BuildingHeistModel.Player">
+              <MappingFragment StoreEntitySet="Player">
+                <ScalarProperty Name="Salt" ColumnName="Salt" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="ProfileImage" ColumnName="ProfileImage" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="dbId" ColumnName="dbId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="GamePlayers" TypeName="BuildingHeistModel.GamePlayers" StoreEntitySet="GamePlayers">
+            <EndProperty Name="Player">
+              <ScalarProperty Name="dbId" ColumnName="PlayerId" />
+            </EndProperty>
+            <EndProperty Name="Game">
+              <ScalarProperty Name="dbId" ColumnName="GameId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

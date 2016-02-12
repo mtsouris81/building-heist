@@ -9,9 +9,9 @@ namespace Hamburglar
 	{
         const string protocol = "http://";
         const string _host =         
-        //    "hamburglar.weenussoft.com";
+           "hamburglar.weenussoft.com";
         //      "localhost:23019";
-            "weenus.hamburglar.com";
+        //    "weenus.hamburglar.com";
 
         
         public static string Host = protocol + _host;
