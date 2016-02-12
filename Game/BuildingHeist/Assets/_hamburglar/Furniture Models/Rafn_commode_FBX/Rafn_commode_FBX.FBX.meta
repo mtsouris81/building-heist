@@ -1,0 +1,121 @@
+fileFormatVersion: 2
+guid: 64a21e267d83fbe4ca1d270131e2fe5b
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Rafn_commode_013
+    100002: Rafn_commode_014
+    100004: Rafn_commode_015
+    100006: Rafn_commode_016
+    100008: Rafn_commode_017
+    100010: Rafn_commode_018
+    100012: Rafn_commode_019
+    100014: Rafn_commode_020
+    100016: Rafn_commode_021
+    100018: Rafn_commode_022
+    100020: Rafn_commode_023
+    100022: Rafn_commode_024
+    100024: Rafn_commode_025
+    100026: //RootNode
+    400000: Rafn_commode_013
+    400002: Rafn_commode_014
+    400004: Rafn_commode_015
+    400006: Rafn_commode_016
+    400008: Rafn_commode_017
+    400010: Rafn_commode_018
+    400012: Rafn_commode_019
+    400014: Rafn_commode_020
+    400016: Rafn_commode_021
+    400018: Rafn_commode_022
+    400020: Rafn_commode_023
+    400022: Rafn_commode_024
+    400024: Rafn_commode_025
+    400026: //RootNode
+    2300000: Rafn_commode_014
+    2300002: Rafn_commode_015
+    2300004: Rafn_commode_017
+    2300006: Rafn_commode_018
+    2300008: Rafn_commode_019
+    2300010: Rafn_commode_020
+    2300012: Rafn_commode_021
+    2300014: Rafn_commode_022
+    2300016: Rafn_commode_023
+    2300018: Rafn_commode_024
+    2300020: Rafn_commode_025
+    3300000: Rafn_commode_014
+    3300002: Rafn_commode_015
+    3300004: Rafn_commode_017
+    3300006: Rafn_commode_018
+    3300008: Rafn_commode_019
+    3300010: Rafn_commode_020
+    3300012: Rafn_commode_021
+    3300014: Rafn_commode_022
+    3300016: Rafn_commode_023
+    3300018: Rafn_commode_024
+    3300020: Rafn_commode_025
+    4300000: Rafn_commode_014
+    4300002: Rafn_commode_015
+    4300004: Rafn_commode_017
+    4300006: Rafn_commode_018
+    4300008: Rafn_commode_019
+    4300010: Rafn_commode_020
+    4300012: Rafn_commode_021
+    4300014: Rafn_commode_022
+    4300016: Rafn_commode_023
+    4300018: Rafn_commode_024
+    4300020: Rafn_commode_025
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

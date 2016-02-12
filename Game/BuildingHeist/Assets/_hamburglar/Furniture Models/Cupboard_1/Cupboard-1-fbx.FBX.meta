@@ -1,0 +1,107 @@
+fileFormatVersion: 2
+guid: 3ad83163c2c7f1a41b081ffc73f11623
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Cupboard01_body
+    100004: Cupboard01_door00
+    100006: Cupboard01_door01
+    100008: Cupboard01_door02
+    100010: Cupboard01_door03
+    100012: Cupboard01_drawer00
+    100014: Cupboard01_drawer01
+    100016: Cupboard01_inerwood00
+    100018: Cupboard01_inerwood01
+    400000: //RootNode
+    400002: Cupboard01_body
+    400004: Cupboard01_door00
+    400006: Cupboard01_door01
+    400008: Cupboard01_door02
+    400010: Cupboard01_door03
+    400012: Cupboard01_drawer00
+    400014: Cupboard01_drawer01
+    400016: Cupboard01_inerwood00
+    400018: Cupboard01_inerwood01
+    2300000: Cupboard01_body
+    2300002: Cupboard01_door00
+    2300004: Cupboard01_door01
+    2300006: Cupboard01_door02
+    2300008: Cupboard01_door03
+    2300010: Cupboard01_drawer00
+    2300012: Cupboard01_drawer01
+    2300014: Cupboard01_inerwood00
+    2300016: Cupboard01_inerwood01
+    3300000: Cupboard01_body
+    3300002: Cupboard01_door00
+    3300004: Cupboard01_door01
+    3300006: Cupboard01_door02
+    3300008: Cupboard01_door03
+    3300010: Cupboard01_drawer00
+    3300012: Cupboard01_drawer01
+    3300014: Cupboard01_inerwood00
+    3300016: Cupboard01_inerwood01
+    4300000: Cupboard01_body
+    4300002: Cupboard01_door00
+    4300004: Cupboard01_door02
+    4300006: Cupboard01_door03
+    4300008: Cupboard01_door01
+    4300010: Cupboard01_drawer01
+    4300012: Cupboard01_drawer00
+    4300014: Cupboard01_inerwood00
+    4300016: Cupboard01_inerwood01
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

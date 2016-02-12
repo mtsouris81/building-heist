@@ -1,0 +1,18 @@
+
+
+Player
+ Capsule
+ Mesh Renderer
+ Character Controller
+ FirstPersonDrifter ****
+ MouseLook ****  ( axes X )
+ CheckIfBelowLevel ****
+ 
+		 
+		 
+		Camera
+		  MouseLook ****  ( axes Y )
+		  LockMouse ***
+		  Camera Zoom ****
+		  HeadBob ****
+		  CameraFadeOnStart ****

@@ -1,0 +1,264 @@
+fileFormatVersion: 2
+guid: e9a669e031c33044d9e407b24fe84842
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Boole.1
+    100002: CASE
+    100004: //RootNode
+    100006: Cube
+    100008: Cube-Null Object.1
+    100010: Cube.1
+    100012: Cube.1.2
+    100014: Cube.1.3
+    100016: Cube.2
+    100018: Cube.2.2
+    100020: Cube.2.3
+    100022: Cube.3
+    100024: Cube.3.2
+    100026: Cube.3.3
+    100028: Cube.4
+    100030: Cube.4.2
+    100032: Cube.5
+    100034: Cube.5.2
+    100036: Cube.6
+    100038: Cube.6.2
+    100040: Cube.7
+    100042: Cube.7.2
+    100044: Cube.8
+    100046: Cylinder
+    100048: Cylinder.1
+    100050: Cylinder.1.2
+    100052: Cylinder.1.3
+    100054: Cylinder.2
+    100056: Cylinder.2.2
+    100058: Cylinder.2.3
+    100060: Cylinder.3
+    100062: Cylinder.3.2
+    100064: Cylinder.3.3
+    100066: Cylinder.4
+    100068: Cylinder.5
+    100070: DOOR
+    100072: Enviroment
+    100074: Extrude NURBS
+    100076: INVIRO
+    100078: Licht
+    100080: Licht.2
+    100082: Licht.3
+    100084: Light
+    100086: Light.1
+    100088: Light.2
+    100090: Light.3
+    100092: Null Object
+    100094: Null Object.1
+    100096: Null Object.2
+    100098: Null Object.3
+    100100: Plane
+    400000: Boole.1
+    400002: CASE
+    400004: //RootNode
+    400006: Cube
+    400008: Cube-Null Object.1
+    400010: Cube.1
+    400012: Cube.1.2
+    400014: Cube.1.3
+    400016: Cube.2
+    400018: Cube.2.2
+    400020: Cube.2.3
+    400022: Cube.3
+    400024: Cube.3.2
+    400026: Cube.3.3
+    400028: Cube.4
+    400030: Cube.4.2
+    400032: Cube.5
+    400034: Cube.5.2
+    400036: Cube.6
+    400038: Cube.6.2
+    400040: Cube.7
+    400042: Cube.7.2
+    400044: Cube.8
+    400046: Cylinder
+    400048: Cylinder.1
+    400050: Cylinder.1.2
+    400052: Cylinder.1.3
+    400054: Cylinder.2
+    400056: Cylinder.2.2
+    400058: Cylinder.2.3
+    400060: Cylinder.3
+    400062: Cylinder.3.2
+    400064: Cylinder.3.3
+    400066: Cylinder.4
+    400068: Cylinder.5
+    400070: DOOR
+    400072: Enviroment
+    400074: Extrude NURBS
+    400076: INVIRO
+    400078: Licht
+    400080: Licht.2
+    400082: Licht.3
+    400084: Light
+    400086: Light.1
+    400088: Light.2
+    400090: Light.3
+    400092: Null Object
+    400094: Null Object.1
+    400096: Null Object.2
+    400098: Null Object.3
+    400100: Plane
+    2300000: Cube
+    2300002: Cube-Null Object.1
+    2300004: Cube.1
+    2300006: Cube.1.2
+    2300008: Cube.1.3
+    2300010: Cube.2
+    2300012: Cube.2.2
+    2300014: Cube.2.3
+    2300016: Cube.3
+    2300018: Cube.3.2
+    2300020: Cube.3.3
+    2300022: Cube.4
+    2300024: Cube.4.2
+    2300026: Cube.5
+    2300028: Cube.5.2
+    2300030: Cube.6
+    2300032: Cube.6.2
+    2300034: Cube.7
+    2300036: Cube.7.2
+    2300038: Cube.8
+    2300040: Cylinder
+    2300042: Cylinder.1
+    2300044: Cylinder.1.2
+    2300046: Cylinder.1.3
+    2300048: Cylinder.2
+    2300050: Cylinder.2.2
+    2300052: Cylinder.2.3
+    2300054: Cylinder.3
+    2300056: Cylinder.3.2
+    2300058: Cylinder.3.3
+    2300060: Cylinder.4
+    2300062: Cylinder.5
+    2300064: Extrude NURBS
+    2300066: Plane
+    3300000: Cube
+    3300002: Cube-Null Object.1
+    3300004: Cube.1
+    3300006: Cube.1.2
+    3300008: Cube.1.3
+    3300010: Cube.2
+    3300012: Cube.2.2
+    3300014: Cube.2.3
+    3300016: Cube.3
+    3300018: Cube.3.2
+    3300020: Cube.3.3
+    3300022: Cube.4
+    3300024: Cube.4.2
+    3300026: Cube.5
+    3300028: Cube.5.2
+    3300030: Cube.6
+    3300032: Cube.6.2
+    3300034: Cube.7
+    3300036: Cube.7.2
+    3300038: Cube.8
+    3300040: Cylinder
+    3300042: Cylinder.1
+    3300044: Cylinder.1.2
+    3300046: Cylinder.1.3
+    3300048: Cylinder.2
+    3300050: Cylinder.2.2
+    3300052: Cylinder.2.3
+    3300054: Cylinder.3
+    3300056: Cylinder.3.2
+    3300058: Cylinder.3.3
+    3300060: Cylinder.4
+    3300062: Cylinder.5
+    3300064: Extrude NURBS
+    3300066: Plane
+    4300000: Cube.8
+    4300002: Cube.7
+    4300004: Cube.6
+    4300006: Cube.5
+    4300008: Cube.4
+    4300010: Cube.3
+    4300012: Cube.2
+    4300014: Cube.1
+    4300016: Cube
+    4300018: Cylinder.1
+    4300020: Cylinder
+    4300022: Cylinder.2
+    4300024: Cylinder.1.2
+    4300026: Cylinder.2.2
+    4300028: Extrude NURBS
+    4300030: Cube.1.2
+    4300032: Cube.2.2
+    4300034: Cube.3.2
+    4300036: Cylinder.3
+    4300038: Cylinder.3.2
+    4300040: Cube.4.2
+    4300042: Cylinder.4
+    4300044: Cylinder.3.3
+    4300046: Cube.5.2
+    4300048: Cylinder.2.3
+    4300050: Cylinder.1.3
+    4300052: Cylinder.5
+    4300054: Cube.2.3
+    4300056: Cube-Null Object.1
+    4300058: Cube.6.2
+    4300060: Cube.7.2
+    4300062: Plane
+    4300064: Cube.1.3
+    4300066: Cube.3.3
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
