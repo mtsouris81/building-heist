@@ -135,16 +135,6 @@ namespace Weenus
             
             this.SceneObjects.Header.Title.text = reg.DisplayTitle;
 
-            if (AppUiTutorial.Current != null && AppUiTutorial.Current.PageTutorials != null && AppUiTutorial.Current.PageTutorials.Count > 0)
-            {
-                var tutorials = AppUiTutorial.Current.PageTutorials;
-                if (tutorials.ContainsKey(CurrentScreen))
-                {
-                    string accomplishmentKey = string.Format("tutorial-{0}", CurrentScreen);
-
-                }
-            }
-
         }
 
         public void ClosePageRequirements()
@@ -166,11 +156,6 @@ namespace Weenus
                 }
             }
 
-            if (this.SceneObjects.MobileInputController != null)
-            {
-                this.SceneObjects.MobileInputController.gameObject.SetActive(true);
-            }
-
             this.SceneObjects.ApplicationBackground.gameObject.SetActive(false);
 
             if (this.SceneObjects.GameSceneParent != null)
@@ -180,10 +165,6 @@ namespace Weenus
 
             this.SceneObjects.Header.gameObject.SetActive(false);
 
-            if (LevelContext.Current != null)
-            {
-                LevelContext.Current.UnPause();
-            }
             PageRequirementsOpen = false;
         }
 
@@ -195,11 +176,6 @@ namespace Weenus
             }
             PageRequirementsOpen = true;
 
-            if (LevelContext.Current != null)
-            {
-                LevelContext.Current.Pause();
-            }
-
             this.SceneObjects.ApplicationBackground.gameObject.SetActive(true);
 
             if (this.SceneObjects.GameSceneParent != null)
@@ -208,11 +184,6 @@ namespace Weenus
             }
 
             this.SceneObjects.Header.gameObject.SetActive(true);
-
-            if (this.SceneObjects.MobileInputController != null)
-            {
-                this.SceneObjects.MobileInputController.gameObject.SetActive(false);
-            }
 
         }
 
