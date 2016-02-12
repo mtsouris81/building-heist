@@ -25,8 +25,7 @@ public class MobileUIManager : MonoBehaviour
     public Button BackButton = null;
     public MobileUIHeader Header = null;
     public UIScreenManager Manager { get; private set; }
-
-    public MobileController MobileInputController = null;
+    
     public Transform UiPagesParent = null;
 
     public Transform GameSceneParent = null;
