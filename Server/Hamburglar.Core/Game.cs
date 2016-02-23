@@ -11,13 +11,7 @@ namespace Hamburglar.Core
         public static bool ActionsAffectScore = true;
         public static int PointsForKickOut = 5;
         public static int CostOfTrap = 2;
-        public Game()
-        {
-            Players = new List<Player>();
-            PlayerIds = new List<string>();
-            PlayerScore = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            Messages = new MessageManager();
-        }
+
         public string Id { get; set; }
         public string Title { get; set; }
         public int Floors { get; set; }
@@ -33,11 +27,14 @@ namespace Hamburglar.Core
         public Dictionary<string, int> PlayerVersions { get; set; }
         public Dictionary<string, int> PlayerScore { get; set; }
 
-
-        public Player GetLocalPlayer(string id)
+        public Game()
         {
-            return Players.Where(x => x.Id.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            Players = new List<Player>();
+            PlayerIds = new List<string>();
+            PlayerScore = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            Messages = new MessageManager();
         }
+        
         private void SetPlayerRoom(string playerId, int floor, int? room)
         {
             var player = GetLocalPlayer(playerId);
@@ -50,6 +47,11 @@ namespace Hamburglar.Core
             }
             PlayerVersions[playerId]++;
         }
+
+        public Player GetLocalPlayer(string id)
+        {
+            return Players.Where(x => x.Id.Equals(id, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+        }
         public string GetRoomOccupant(int floor, int room)
         {
             return Building.Floors[floor].OccupiedRooms[room];
@@ -57,6 +59,10 @@ namespace Hamburglar.Core
         public RoomOccupiedResult SetRoomOccupant(string playerId, int floor, int room)
         {
             RoomOccupiedResult result = new RoomOccupiedResult();
+            if (IsValidForRoomEnter(playerId, floor, room) != OccupyRoomValidationResult.Valid)
+            {
+                return result;
+            }
             string currentOccupant = Building.Floors[floor].OccupiedRooms[room];
             if (currentOccupant != null && !currentOccupant.Equals(playerId, StringComparison.OrdinalIgnoreCase))
             { // room is occupied by someone else
@@ -123,7 +129,7 @@ namespace Hamburglar.Core
         }
         public void ExitRoom(string playerId, int floor, int room)
         {
-            if (Building.Floors[floor].OccupiedRooms[room] == playerId) // if player is the occupant, otherwise leave alone
+            if (IsValidForRoomExit(playerId, floor, room) == OccupyRoomValidationResult.Valid)
             {
                 SetPlayerRoom(playerId, floor, null);
                 Building.Floors[floor].OccupiedRooms[room] = null;
@@ -134,6 +140,10 @@ namespace Hamburglar.Core
         public ClearLootResult ClearRoomLoot(string playerId, int floor, int room, int lootIndex)
         {
             ClearLootResult result = new ClearLootResult();
+            if (IsValidForLoot(playerId, floor, room, lootIndex) != LootValidationResult.Valid)
+            {
+                return result; // invalid, do nothing
+            }
             int lootValue = Building.Floors[floor].Rooms[room, lootIndex];
             if (lootValue != 0)
             {
@@ -163,6 +173,10 @@ namespace Hamburglar.Core
         }
         public void SetRoomLootTrap(string playerId, int floor, int room, int lootIndex, int trapId)
         {
+            if (IsValidForLoot(playerId, floor, room, lootIndex) != LootValidationResult.Valid)
+            {
+                return;
+            }
             if (GetPlayerScore(playerId) < CostOfTrap)
                 return;
 
@@ -191,7 +205,6 @@ namespace Hamburglar.Core
                 Winner = GetLocalPlayer(winnerId);
             }
         }
-
         public void UpdateFrom(GameTransport data, bool checkVersions)
         {
             if (this.Building == null)
@@ -238,7 +251,6 @@ namespace Hamburglar.Core
                 }
             }
         }
-
         public void CreateMessageForAllPlayers(MessageType type, string exceptPlayerId)
         {
             CreateMessageForAllPlayers(type, null, exceptPlayerId);
@@ -260,6 +272,45 @@ namespace Hamburglar.Core
                 }
             }
         }
+        public LootValidationResult IsValidForLoot(string playerId, int floor, int room, int index)
+        {
+            var currentRoomOccupant = GetRoomOccupant(floor, room);
+            if (currentRoomOccupant != null && currentRoomOccupant.Equals(playerId, StringComparison.OrdinalIgnoreCase))
+            {
+                return LootValidationResult.Valid;
+            }
+            return LootValidationResult.NotInRoom;
+        }
+        public OccupyRoomValidationResult IsValidForRoomEnter(string playerId, int floor, int room)
+        {
+            var currentRoomOccupant = GetRoomOccupant(floor, room);
+            if (currentRoomOccupant != null && currentRoomOccupant.Equals(playerId, StringComparison.OrdinalIgnoreCase))
+            {
+                return OccupyRoomValidationResult.AlreadyInRoom;
+            }
+            return OccupyRoomValidationResult.Valid;
+        }
+        public OccupyRoomValidationResult IsValidForRoomExit(string playerId, int floor, int room)
+        {
+            var currentRoomOccupant = GetRoomOccupant(floor, room);
+            if (currentRoomOccupant != null && currentRoomOccupant.Equals(playerId, StringComparison.OrdinalIgnoreCase))
+            {
+                return OccupyRoomValidationResult.Valid;
+            }
+            return OccupyRoomValidationResult.NotInRoom;
+        }
+    }
+
+    public enum OccupyRoomValidationResult
+    {
+        Valid,
+        AlreadyInRoom,
+        NotInRoom
+    }
+    public enum LootValidationResult
+    {
+        Valid,
+        NotInRoom
     }
     public class ClearLootResult
     {

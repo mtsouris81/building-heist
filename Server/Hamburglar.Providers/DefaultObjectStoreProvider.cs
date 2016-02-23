@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,13 +11,12 @@ namespace Hamburglar.Providers
 {
     public class DefaultObjectStoreProvider : IObjectPersistence
     {
-        public string ConnectionString = "mongodb://localhost:27017";
         public string DatabaseName = "BuildingHeist";
         private MongoClient client;
 
         public DefaultObjectStoreProvider()
         {
-            client = new MongoClient(ConnectionString);
+            client = new MongoClient(ConfigurationManager.ConnectionStrings["MongoDB"].ConnectionString);
         }
 
         private IMongoCollection<Core.Game> GetGameCollection()
