@@ -13,9 +13,10 @@ namespace Hamburglar.Server.Controllers
         public static DateTime LastSynch { get; private set; }
         public static double SynchIntervalSeconds = 30;
 
-        public ISharedCache Cache;
-        public IObjectPersistence ObjectStore;
+        ISharedCache Cache;
+        IObjectPersistence ObjectStore;
         IRelationalPersistence RelationalStore;
+
         public SynchController(ISharedCache cache, IObjectPersistence objectStore, IRelationalPersistence relationalStore)
         {
             RelationalStore = relationalStore;
@@ -34,7 +35,6 @@ namespace Hamburglar.Server.Controllers
                 SynchronizeFromCache();
             }
         }
-
         private void SynchronizeFromCache()
         {
             Thread t = new Thread(() =>

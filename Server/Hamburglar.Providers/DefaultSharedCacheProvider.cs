@@ -78,7 +78,6 @@ namespace Hamburglar.Providers
         {
             return string.Format("{0}-{1}", prefix, id);
         }
-
         public List<Core.Game> GetGames()
         {
             return GetAll<Core.Game>("Game");
