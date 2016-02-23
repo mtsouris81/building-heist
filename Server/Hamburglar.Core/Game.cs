@@ -21,7 +21,6 @@ namespace Hamburglar.Core
         public List<Player> Players { get; set; }
         public List<string> PlayerIds { get; set; }
         public Building Building { get; set; }
-        public MessageManager Messages { get; set; }
         public int GameMetaVersion { get; set; }
         public int[] FloorVersions { get; set; }
         public Dictionary<string, int> PlayerVersions { get; set; }
@@ -32,7 +31,6 @@ namespace Hamburglar.Core
             Players = new List<Player>();
             PlayerIds = new List<string>();
             PlayerScore = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            Messages = new MessageManager();
         }
         
         private void SetPlayerRoom(string playerId, int floor, int? room)
@@ -134,7 +132,6 @@ namespace Hamburglar.Core
                 SetPlayerRoom(playerId, floor, null);
                 Building.Floors[floor].OccupiedRooms[room] = null;
                 FloorVersions[floor]++;
-                CreateMessageForAllPlayers(MessageType.GameUpdate, playerId);
             }
         }
         public ClearLootResult ClearRoomLoot(string playerId, int floor, int room, int lootIndex)
@@ -248,27 +245,6 @@ namespace Hamburglar.Core
                         }
                         PlayerScore[player.id] = player.score;
                     }
-                }
-            }
-        }
-        public void CreateMessageForAllPlayers(MessageType type, string exceptPlayerId)
-        {
-            CreateMessageForAllPlayers(type, null, exceptPlayerId);
-        }
-        public void CreateMessageForAllPlayers(MessageType type, string tag, string exceptPlayerId)
-        {
-            foreach(var id in PlayerIds)
-            {
-                if (exceptPlayerId != null && exceptPlayerId.Equals(id))
-                    continue;
-
-                if (tag == null)
-                {
-                    Messages.Create(id, type);
-                }
-                else
-                {
-                    Messages.Create(id, type, tag);
                 }
             }
         }

@@ -19,8 +19,6 @@ namespace Hamburglar.Core
 
         }
 
-
-
         public Game Create(Player owner, string title, int floors, int roomsPerFloor, List<Player> players)
         {
             if (floors > MAX_GAME_FLOORS)
@@ -56,8 +54,5 @@ namespace Hamburglar.Core
             }
             return result;
         }
-
-
-
     }
 }
