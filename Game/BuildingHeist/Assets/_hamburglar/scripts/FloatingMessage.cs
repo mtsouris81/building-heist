@@ -7,11 +7,20 @@ public class FloatingMessage : MonoBehaviour {
 
     public Text BackText = null;
     public Text FrontText = null;
+    public Graphic BackgroundGraphic = null;
+    public Color DefaultColor = Color.white;
 
     public float Speed = 0.2f;
     public Vector2 SpawnPosition = new Vector2(50, 50);
     RectTransform rect;
 
+    public void SetColor(Color color)
+    {
+        if (BackgroundGraphic == null)
+            return;
+
+        BackgroundGraphic.color = color;
+    }
     public void SetText(string content)
     {
         BackText.text = content;

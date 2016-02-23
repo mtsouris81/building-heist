@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Hamburglar
@@ -8,14 +9,11 @@ namespace Hamburglar
 	public static class UrlResolver
 	{
         const string protocol = "http://";
-        const string _host =         
-           "hamburglar.weenussoft.com";
-        //      "localhost:23019";
-        //    "weenus.hamburglar.com";
 
-        
-        public static string Host = protocol + _host;
-        public static string BaseURL = protocol + _host + "/api/";
+        public static string Host { get; set; }
+
+        public static string BaseURL { get { return protocol + Host + "/api/"; } }
+        public static string RealTimeURL { get { return protocol + Host; } }
         public static string RealTimeHub = "GameHub";
 
         public static string Login(string username,string password)

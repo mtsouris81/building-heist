@@ -113,7 +113,7 @@ namespace Hamburglar
         {
             PlayerId = playerId;
             GameUpdateCallback = gameUpdateCallback;
-            base.Connect(UrlResolver.Host, UrlResolver.RealTimeHub);
+            base.Connect(UrlResolver.RealTimeURL, UrlResolver.RealTimeHub);
         }
         public override void SetRequestParams()
         {

@@ -25,6 +25,18 @@ public class StyleSheetConsumer : MonoBehaviour
                 i.IgnoreStyles(false);
         }
     }
+    public void ApplyStyles(StyleSheet styleSheet)
+    {
+        if (IgnoreStyle)
+            return;
+
+
+        _style = styleSheet.GetStyle(this.StyleName.ToString());
+        if (_style != null)
+        {
+            ApplyStyle(_style);
+        }
+    }
     public void Start()
     {
         isEditorMode = Application.isEditor;
