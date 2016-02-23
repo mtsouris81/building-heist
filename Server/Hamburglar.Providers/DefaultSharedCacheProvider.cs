@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using ServiceStack.Redis;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace Hamburglar.Providers
     {
         public RedisClient GetCache()
         {
-            return new RedisClient();
+            return new RedisClient(new Uri(ConfigurationManager.ConnectionStrings["Redis"].ConnectionString));
         }
         public Core.Game GetGame(string gameId)
         {
