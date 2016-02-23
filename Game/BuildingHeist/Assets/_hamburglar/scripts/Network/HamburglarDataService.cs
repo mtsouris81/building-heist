@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Hamburglar.Core;
 using System;
 using Hamburglar;
+using System.Runtime.Serialization;
+using System.Reflection;
+using System.ComponentModel;
 
 public class HamburglarDataService : MonoBehaviour
 {
@@ -12,6 +15,18 @@ public class HamburglarDataService : MonoBehaviour
     HamburglarContext context { get { return HamburglarContext.Instance; } }
     public RectTransform WebLoadingDisplay = null;
     public Action<object> ServiceResolved { get; set; }
+
+    public Hosts Host = Hosts.LocalDebug;
+
+    public enum Hosts
+    {
+        [DescriptionAttribute("localhost:23019")]
+        LocalDebug,
+        [DescriptionAttribute("weenus.hamburglar.com")]
+        Local,
+        [DescriptionAttribute("hamburglar.weenussoft.com")]
+        Prod
+    }
 
     public string GameId
     {
@@ -22,8 +37,24 @@ public class HamburglarDataService : MonoBehaviour
         get { return HamburglarContext.Instance.PlayerId; }
     }
 
+
+    public static string GetDescription(object enumValue, string defDesc)
+    {
+        FieldInfo fi = enumValue.GetType().GetField(enumValue.ToString());
+        if (null != fi)
+        {
+            object[] attrs = fi.GetCustomAttributes(typeof(DescriptionAttribute), true);
+            if (attrs != null && attrs.Length > 0)
+                return ((DescriptionAttribute)attrs[0]).Description;
+        }
+
+        return defDesc;
+
+    }
     void Start()
     {
+        UrlResolver.Host = GetDescription(this.Host, "");
+        Debug.Log(string.Format("Service Environment : {0} - url : {1}", this.Host, UrlResolver.Host));
         services.Add(new JsonWebServiceCall<string>("login"));
         services.Add(new JsonWebServiceCall<WebGameTransport>("create"));
         services.Add(new JsonWebServiceCall<GameListResult>("gamelist"));
@@ -32,6 +63,25 @@ public class HamburglarDataService : MonoBehaviour
         foreach (var s in services)
         {
             s.WebLoadingDisplay = WebLoadingDisplay.gameObject;
+        }
+        WebServiceGlobals.GlobalErrorCallback = (errorResonse, responseBody) =>
+        {
+            string errorBody = string.Empty;
+            if (responseBody !=null && responseBody.Length < 220)// only allow short error messages to display
+            {
+                errorBody = responseBody;
+            }
+            HamburglarContext.Instance.SetFloatingMessage(
+                string.Format("{0}\n{1}", errorResonse, errorBody),
+                Color.red);
+        };
+    }
+
+    public void OnApplicationQuit()
+    {
+        if (context != null && context.Messaging != null)
+        {
+            context.Messaging.Disconnect();
         }
     }
 

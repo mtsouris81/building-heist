@@ -42,10 +42,15 @@ public class HamburglarContext : MonoBehaviour {
     bool isFirstFrame = true;
     int? lastPreparedFloor = null;
     float lastMessageSpawned = 0;
-    Queue<string> floatingMessageQueue = new Queue<string>();
+    Queue<QueuedFloatingMessage> floatingMessageQueue = new Queue<QueuedFloatingMessage>();
     public float minTimeBetweenMessages = 0.85f;
     ActionTimer floatingMessageTimer;
 
+    public class QueuedFloatingMessage
+    {
+        public string Message { get; set; }
+        public Color Color { get; set; }
+    }
     void Start()
     {
         Instance = this;
@@ -118,6 +123,11 @@ public class HamburglarContext : MonoBehaviour {
 
     public void SetFloatingMessage(string message)
     {
+        SetFloatingMessage(message, Color.yellow);
+    }
+
+    public void SetFloatingMessage(string message, Color color)
+    {
         if (floatingMessageTimer == null)
         {
             floatingMessageTimer = new ActionTimer(minTimeBetweenMessages, () =>
@@ -130,7 +140,11 @@ public class HamburglarContext : MonoBehaviour {
             floatingMessageTimer.Start();
         }
 
-        floatingMessageQueue.Enqueue(message);
+        floatingMessageQueue.Enqueue(new QueuedFloatingMessage()
+        {
+            Color = color,
+            Message = message
+        });
         if ((Time.realtimeSinceStartup - lastMessageSpawned) > minTimeBetweenMessages)
         {
             // clear immediately if no other active messages
@@ -144,7 +158,8 @@ public class HamburglarContext : MonoBehaviour {
         lastMessageSpawned = Time.realtimeSinceStartup;
         var m = floatingMessageQueue.Dequeue();
         var floatingMessage = GameObject.Instantiate(this.FloatingMessagePrefab) as FloatingMessage;
-        floatingMessage.SetText(m);
+        floatingMessage.SetText(m.Message);
+        floatingMessage.SetColor(m.Color);
         floatingMessage.transform.SetParent(HamburglarContext.Instance.UISpawnContainer.transform);
         floatingMessage.StartDisplay();
     }

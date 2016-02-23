@@ -232,6 +232,11 @@ public interface IServiceResolver
     GameObject WebLoadingDisplay { get; set; }
 }
 
+public static class WebServiceGlobals
+{
+
+    public static Action<string, string> GlobalErrorCallback { get; set; }
+}
 public class JsonWebServiceCall<T> : IServiceResolver
 {
     public JsonWebServiceCall(string name)
@@ -261,7 +266,8 @@ public class JsonWebServiceCall<T> : IServiceResolver
     private object FormPostObject = null;
     public GameObject WebLoadingDisplay { get; set; }
 
-    public Action<string,string> OnErrorCallback { get; set; }
+    public Action<string, string> OnErrorCallback { get; set; }
+
 
 
 
@@ -353,6 +359,16 @@ public class JsonWebServiceCall<T> : IServiceResolver
             {
                 OnErrorCallback(www.error, www.text);
             }
+            if (WebServiceGlobals.GlobalErrorCallback != null)
+            {
+                WebServiceGlobals.GlobalErrorCallback(www.error, www.text);
+            }
+            if (UseLoadingPrompt && this.WebLoadingDisplay != null)
+            {
+                this.WebLoadingDisplay.SetActive(false);
+            }
+            hasResolved = true;
+            IsActive = false;
             return false;
         }
 

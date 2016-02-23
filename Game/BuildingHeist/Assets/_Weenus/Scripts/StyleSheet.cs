@@ -5,6 +5,7 @@ using UnityEngine;
 public class StyleSheet : MonoBehaviour
 {
 
+
     public bool LiveUpdate = true;
     public StyleSheetDeclaration[] Declarations = null;
 
