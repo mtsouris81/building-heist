@@ -2,18 +2,12 @@
 using Hamburglar.Providers;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Hamburglar.Server.Controllers
 {
     public class HomeController : Controller
     {
-
         ISharedCache SharedCache;
         IRealTimeMessaging RealTimeMessaging;
         IRelationalPersistence RelationalPersistence;
@@ -64,16 +58,6 @@ namespace Hamburglar.Server.Controllers
             model.isFullGame = true;
             return JsonData(model);
         }
-        public ActionResult GameUpdate(string gameId, string playerId, int floor)
-        {
-            var versions = GetVersions(Request);
-            var game = GetGame(gameId);
-            var model = WebGameTransport.CreateSuccess();
-            model.id = gameId;
-            model = WebGameTransport.CheckGameVersion(game, model, floor, playerId, versions.Game, versions.Floor, versions.Player);
-            return JsonData(model);
-        }
-
         public ActionResult Games(string playerId)
         {
             var games = RelationalPersistence.GetGames(playerId);
@@ -105,7 +89,6 @@ namespace Hamburglar.Server.Controllers
             return HttpError("User could not be created. Try using a different username");
         }
 
-
         private Core.Game GetGame(string gameId)
         {
             var game = SharedCache.GetGame(gameId);
@@ -119,8 +102,6 @@ namespace Hamburglar.Server.Controllers
             }
             return game;
         }
-
-
         private ActionResult Http401()
         {
             return new HttpUnauthorizedResult();
@@ -129,32 +110,11 @@ namespace Hamburglar.Server.Controllers
         {
             return new HttpStatusCodeResult(500, message);
         }
-
-
-        public ActionResult JsonData<T>(T model)
+        private ActionResult JsonData<T>(T model)
         {
             string json = JsonConvert.SerializeObject(model);
             return Content(json, "text/json");
         }
-
-        public ClientVersions GetVersions(HttpRequestBase request)
-        {
-            ClientVersions result = new ClientVersions();
-
-            int.TryParse(request.QueryString["g"], out result.Game);
-            int.TryParse(request.QueryString["f"], out result.Floor);
-            int.TryParse(request.QueryString["p"], out result.Player);
-
-            return result;
-        }
-
-        public class ClientVersions
-        {
-            public int Game;
-            public int Floor;
-            public int Player;
-        }
-
     }
 
 }
