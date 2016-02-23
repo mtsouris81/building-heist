@@ -26,12 +26,10 @@ namespace Hamburglar.Server.Controllers
         {
             return base.OnConnected();
         }
-
         public void JoinGame(string gameId)
         {
             Groups.Add(Context.ConnectionId, gameId);
         }
-
         public WebGameTransport EnterRoom(string gameId, string playerId, int floor, int room)
         {
             return SetRoomOccupied(gameId, playerId, floor, room, true);
@@ -39,40 +37,6 @@ namespace Hamburglar.Server.Controllers
         public WebGameTransport ExitRoom(string gameId, string playerId, int floor, int room)
         {
             return SetRoomOccupied(gameId, playerId, floor, room, false);
-        }
-        private WebGameTransport SetRoomOccupied(string gameId, string playerId, int floor, int room, bool isOccupying)
-        {
-            Synchronizer.PerformSynch();
-            var model = WebGameTransport.CreateSuccess();
-            var versions = GetVersions();
-            var game = GetGame(gameId);
-            if (isOccupying)
-            {
-                var occupant = game.GetRoomOccupant(floor, room);
-                if (!string.IsNullOrEmpty(occupant))
-                {
-                    var occ = game.GetLocalPlayer(occupant);
-                    if (occ != null)
-                    {
-                        model.roomOccupant = PlayerMetaData.FromPlayer(occ);
-                    }
-                }
-                var result = game.SetRoomOccupant(playerId, floor, room);
-                SharedCache.SetGame(game);
-                if (result.OpponentCaught)
-                {
-                    RealTimeMessaging.OpponentCaught(game, playerId, result.OpponentId);
-                }
-                RealTimeMessaging.RoomEntered(game, playerId);
-            }
-            else
-            {
-                game.ExitRoom(playerId, floor, room);
-                SharedCache.SetGame(game);
-                RealTimeMessaging.RoomExited(game, playerId);
-            }
-            RealTimeMessaging.NeedUpdate(game);
-            return model;
         }
         public void Loot(string gameId, string playerId, int floor, int room, int itemIndex, int trapId)
         {
@@ -97,7 +61,6 @@ namespace Hamburglar.Server.Controllers
 
             Synchronizer.PerformSynch(game.Winner != null);
         }
-
         public WebGameTransport GameUpdate(int playerVersion, int floorVersion, int gameVersion, string gameId, string playerId, int floor)
         {
             Synchronizer.PerformSynch();
@@ -108,6 +71,40 @@ namespace Hamburglar.Server.Controllers
             return model;
         }
 
+        private WebGameTransport SetRoomOccupied(string gameId, string playerId, int floor, int room, bool isOccupying)
+        {
+            Synchronizer.PerformSynch();
+            var model = WebGameTransport.CreateSuccess();
+            var versions = GetVersions();
+            var game = GetGame(gameId);
+            if (isOccupying)
+            {
+                var occupant = game.GetRoomOccupant(floor, room);
+                if (!string.IsNullOrEmpty(occupant) && !playerId.Equals(occupant, StringComparison.OrdinalIgnoreCase))
+                {
+                    var occ = game.GetLocalPlayer(occupant);
+                    if (occ != null)
+                    {
+                        model.roomOccupant = PlayerMetaData.FromPlayer(occ);
+                    }
+                }
+                var result = game.SetRoomOccupant(playerId, floor, room);
+                SharedCache.SetGame(game);
+                if (result.OpponentCaught)
+                {
+                    RealTimeMessaging.OpponentCaught(game, playerId, result.OpponentId);
+                }
+                RealTimeMessaging.RoomEntered(game, playerId);
+            }
+            else
+            {
+                game.ExitRoom(playerId, floor, room);
+                SharedCache.SetGame(game);
+                RealTimeMessaging.RoomExited(game, playerId);
+            }
+            RealTimeMessaging.NeedUpdate(game);
+            return model;
+        }
         private Core.Game GetGame(string gameId)
         {
             var game = SharedCache.GetGame(gameId);
@@ -131,6 +128,7 @@ namespace Hamburglar.Server.Controllers
 
             return result;
         }
+
         private class ClientVersions
         {
             public int Game;
