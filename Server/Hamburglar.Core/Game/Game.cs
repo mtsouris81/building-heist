@@ -8,6 +8,10 @@ namespace Hamburglar.Core
     [Serializable]
     public class Game
     {
+        public const int MAX_ITEMS_PER_ROOM = 5;
+        public const int MAX_GAME_FLOORS = 25;
+        public const int MAX_GAME_ROOMS_PER_FLOOR = 9;
+
         public static bool ActionsAffectScore = true;
         public static int PointsForKickOut = 5;
         public static int CostOfTrap = 2;
@@ -275,271 +279,41 @@ namespace Hamburglar.Core
             }
             return OccupyRoomValidationResult.NotInRoom;
         }
-    }
 
-    public enum OccupyRoomValidationResult
-    {
-        Valid,
-        AlreadyInRoom,
-        NotInRoom
-    }
-    public enum LootValidationResult
-    {
-        Valid,
-        NotInRoom
-    }
-    public class ClearLootResult
-    {
-        public int? LootEarned { get; set; }
-        public string TrapOpponentId { get; set; }
-        public bool WasTrapped
+        public static Game Create(Player owner, string title, int floors, int roomsPerFloor, List<Player> players)
         {
-            get
+            if (floors > MAX_GAME_FLOORS)
+                floors = MAX_GAME_FLOORS;
+
+            if (roomsPerFloor > MAX_GAME_ROOMS_PER_FLOOR)
+                roomsPerFloor = MAX_GAME_ROOMS_PER_FLOOR;
+
+            players.Add(owner);
+            var playerIds = players.Select(x => x.Id).Distinct().ToList();
+            Game result = new Game()
             {
-                return !string.IsNullOrEmpty(TrapOpponentId);
-            }
-        }
-        public bool IsNothing
-        {
-            get
+                Title = title,
+                Creator = owner,
+                PlayerIds = playerIds,
+                Players = players.Select(x => x.Clone()).ToList(),
+                Id = Guid.NewGuid().ToString("N"),
+                Floors = floors,
+                RoomsPerFloor = roomsPerFloor,
+                Building = Building.Generate(floors, roomsPerFloor, MAX_ITEMS_PER_ROOM, 10),
+                FloorVersions = new int[floors],
+                PlayerVersions = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase),
+                GameMetaVersion = 1
+            };
+            for (int i = 0; i < floors; i++)
             {
-                return (!LootEarned.HasValue || LootEarned.Value == 0) && !WasTrapped;
+                result.FloorVersions[i] = 1;
             }
-        }
-    }
-    public class RoomOccupiedResult
-    {
-        public bool OpponentCaught { get; set; }
-        public string OpponentId { get; set; }
-    }
-
-    public class GameTransport
-    {
-        public string id { get; set; }
-        public List<VersionedGameData<FloorData>> floors { get; set; }
-        public VersionedGameData<PlayerMetaData> me { get; set; }
-        public VersionedGameData<GameMetaData> game { get; set; }
-        public static Game ToGame(GameTransport game)
-        {
-            Game result = new Game();
-            result.Building = new Building();
-            result.Building.Floors = game.floors.Select(x => FloorData.ToFloor(x.d)).ToArray();
-            result.Building.TotalValue = game.game.d.buildingScore;
-            result.Floors = game.game.d.floors;
-            result.RoomsPerFloor = game.game.d.roomsPerFloor;
-            result.PlayerVersions = new Dictionary<string, int>();
-            result.Players = game.game.d.players.Select(x => PlayerMetaData.ToPlayer(x)).ToList();
-            result.PlayerIds = game.game.d.players.Select(x => x.id).ToList();
-            result.Id = game.id;
-
-            if (game.me != null && game.me.d != null)
+            foreach (var id in playerIds)
             {
-                result.PlayerScore.Add(game.me.d.id, game.me.d.score);
+                result.PlayerVersions.Add(id, 1);
+                result.PlayerScore.Add(id, 0);
             }
-
-            // set versions
-            result.FloorVersions = game.floors.Select(x => x.v).ToArray();
-            result.GameMetaVersion = game.game.v;
-            result.PlayerVersions.Add(game.me.d.id, game.me.v);
-
             return result;
         }
-    }
-
-    public class WebGameTransport : GameTransport
-    {
-        public bool success { get; set; }
-        public string error { get; set; }
-        public bool isFullGame { get; set; }
-        public PlayerMetaData roomOccupant { get; set; }
-        public static WebGameTransport CreateSuccess()
-        {
-            return new WebGameTransport() { success = true };
-        }
-        public static WebGameTransport CreateError(string message)
-        {
-            return new WebGameTransport() { success = false, error = message };
-        }
-        public static WebGameTransport CheckGameVersion(Game sourceData, WebGameTransport game, int? floor, string playerId, int gameVersion, int floorVersion, int playerVersion)
-        {
-            game.id = sourceData.Id;
-
-            if (sourceData.GameMetaVersion > gameVersion)
-            {
-                game.game = new VersionedGameData<GameMetaData>()
-                {
-                    v = sourceData.GameMetaVersion,
-                    d = new GameMetaData()
-                    {
-                        floors = sourceData.Floors,
-                        roomsPerFloor = sourceData.RoomsPerFloor,
-                        players = GetPlayerModels(sourceData.Players),
-                        buildingScore = sourceData.Building.TotalValue
-                    }
-                };
-
-                if (sourceData.Winner != null)
-                {
-                    game.game.d.winner = PlayerMetaData.FromPlayer(sourceData.Winner);
-                }
-            }
-
-            if (floor.HasValue)
-            {
-                if (sourceData.FloorVersions[floor.Value] > floorVersion)
-                {
-                    // only get floor with mismatched version
-                    game.floors = new List<VersionedGameData<FloorData>>()
-                        {
-                            new VersionedGameData<FloorData>()
-                            {
-                                v = sourceData.FloorVersions[floor.Value],
-                                d = new FloorData()
-                                {
-                                    i = floor.Value,
-                                    occ = sourceData.Building.Floors[floor.Value].OccupiedRooms,
-                                    r = sourceData.Building.Floors[floor.Value].Rooms,
-                                    t = sourceData.Building.Floors[floor.Value].Traps
-                                }
-                            }
-                        };
-                }
-            }
-            else
-            {
-                // get all floors for game (for initial requests)
-                game.floors = new List<VersionedGameData<FloorData>>();
-                for (int fl = 0; fl < sourceData.Floors; fl++)
-                {
-                    game.floors.Add(new VersionedGameData<FloorData>()
-                    {
-                        v = sourceData.FloorVersions[fl],
-                        d = new FloorData()
-                        {
-                            i = fl,
-                            occ = sourceData.Building.Floors[fl].OccupiedRooms,
-                            r = sourceData.Building.Floors[fl].Rooms,
-                            t = sourceData.Building.Floors[fl].Traps
-                        }
-                    });
-                }
-            }
-
-            if (sourceData.PlayerVersions[playerId] > playerVersion)
-            {
-                var player = sourceData.GetLocalPlayer(playerId);
-                int playerScore = 0;
-                sourceData.PlayerScore.TryGetValue(playerId, out playerScore);
-                game.me = new VersionedGameData<PlayerMetaData>()
-                {
-                    v = sourceData.PlayerVersions[playerId],
-                    d = new PlayerMetaData()
-                    {
-                        id = player.Id,
-                        username = player.Username,
-                        score = playerScore,
-                        floor = player.Floor,
-                        room = player.Room
-                    }
-                };
-            }
-
-            return game;
-        }
-        private static List<PlayerMetaData> GetPlayerModels(List<Player> list)
-        {
-            return list.Select(x => new PlayerMetaData()
-            {
-                id = x.Id,
-                username = x.Username
-            }).ToList();
-        }
-    }
-
-    public class GameListResult
-    {
-        public bool s { get; set; }
-        public List<GameListItem> i { get; private set; }
-
-        public GameListResult()
-        {
-            i = new List<GameListItem>();
-            s = false;
-        }
-        public GameListResult(IEnumerable<Game> games)
-        {
-            s = true;
-            i = games.Select(x => new GameListItem()
-            {
-                i = x.Id,
-                t = x.Title,
-               // o = x.Creator.Username
-            }).ToList();
-        }
-    }
-    public class GameListItem
-    {
-        public string i { get; set; }
-        public string o { get; set; }
-        public string t { get; set; }
-    }
-
-    public class FloorData
-    {
-        public int i;
-        public int[,] r;
-        public LootTrap[,] t;
-        public string[] occ;
-
-        public static Floor ToFloor(FloorData floor)
-        {
-            Floor result = new Floor(floor.r.Length, 5);
-            result.OccupiedRooms = floor.occ;
-            result.Rooms = floor.r;
-            result.Traps = floor.t;
-            return result;
-        }
-    }
-    public class PlayerMetaData
-    {
-        public string id { get; set; }
-        public string username { get; set; }
-        public int score { get; set; }
-        public int floor { get; set; }
-        public int? room { get; set; }
-        public static Player ToPlayer(PlayerMetaData player)
-        {
-            if (player == null)
-                return null;
-
-            Player result = new Player();
-            result.Id = player.id;
-            result.Username = player.username;
-            result.Floor = player.floor;
-            result.Room = player.room;
-            return result;
-        }
-        public static PlayerMetaData FromPlayer(Player player)
-        {
-            PlayerMetaData result = new PlayerMetaData();
-            result.id = player.Id;
-            result.room = player.Room;
-            result.floor = player.Floor;
-            result.username = player.Username;
-            return result;
-        }
-    }
-    public class GameMetaData
-    {
-        public int floors { get; set; }
-        public int roomsPerFloor { get; set; }
-        public int buildingScore { get; set; }
-        public List<PlayerMetaData> players { get; set; }
-        public PlayerMetaData winner { get; set; }
-    }
-    public class VersionedGameData<T>
-    {
-        public T d { get; set; }
-        public int v { get; set; }
     }
 }
