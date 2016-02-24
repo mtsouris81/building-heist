@@ -41,7 +41,7 @@ namespace Hamburglar.Providers
                 }
             }
             // create actual game and generate floors
-            Core.Game game = new GameDataManager().Create(owner, title, floors, roomsPerFloor, otherPlayers);
+            Core.Game game = Core.Game.Create(owner, title, floors, roomsPerFloor, otherPlayers);
             // save to database
             using (var db = GetDb())
             {
