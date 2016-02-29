@@ -98,7 +98,6 @@ public class MobileUIManager : MonoBehaviour
     }
     public void MultiSelectCallback(List<string> item)
     {
-        //Debug.Log(string.Format("selected many {0}- {1}", item.Count, string.Join(",",item.ToArray())));
         this.Manager.Back();
     }
 }

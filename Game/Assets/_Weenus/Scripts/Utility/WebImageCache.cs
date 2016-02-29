@@ -18,7 +18,6 @@ public class WebImageCache : MonoBehaviour {
             d.AttemptResolve();
             if (d.Resolved)
             {
-                //Debug.Log(string.Format("resolved {0}", d.URL));
                 DownloadsToClear.Add(d);
             }
         }

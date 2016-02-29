@@ -27,7 +27,6 @@ public class BindableListItem : MonoBehaviour, IPointerEnterHandler, IPointerExi
         if (UiTextItem != null)
         {
             UiTextItem.color = c;
-            Debug.Log(UiTextItem.color);
         }
         _initialColorsSet = true;
     }
@@ -83,7 +82,6 @@ public class BindableListItem : MonoBehaviour, IPointerEnterHandler, IPointerExi
             return;
 
         _initialColorsSet = true;
-        Debug.Log("start set color");
         if (UiTextItem != null)
         {
             UiTextItem.color = TextColor;

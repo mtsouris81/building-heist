@@ -82,7 +82,6 @@ public class HamburglarTutorial : MonoBehaviour {
                 RoomRayCastInterceptor = (Vector3 p, RoomItemCollider x) => {
                     if (x.Item.Type == FurnitureType.Door)
                     {
-                        Debug.Log("door hit");
                         // it's an item
                         NextStep();
                     }

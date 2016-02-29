@@ -38,7 +38,7 @@ public class HamburglarUiCreateGame : MonoBehaviour {
                                     View.GetInputText("players"),
                                     floors,
                                     rooms);
-            Debug.Log(url);
+
             HamburglarContext.Instance.Service.Call("create", url, OnGameCreated);
         });
 

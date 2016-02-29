@@ -37,7 +37,6 @@ namespace Hamburglar
         }
         public void NeedsUpdate()
         {
-            UnityEngine.Debug.Log("NeedsUpdate");
             var versions = UrlResolver.GetVersions();
             var signal = Proxy.Invoke<WebGameTransport>(
                                         "GameUpdate",
@@ -59,7 +58,6 @@ namespace Hamburglar
         }
         public void HandleRoomChange(int floor, int? room, string playerId)
         {
-            UnityEngine.Debug.Log("local floor room change!");
             if (floor == HamburglarContext.Instance.Floor)
             {
                 var versions = UrlResolver.GetVersions();
@@ -125,7 +123,6 @@ namespace Hamburglar
             };
             proxy.Subscribe("NeedUpdate").Data += (object[] args) =>
             {
-                UnityEngine.Debug.Log("update!");
                 NeedsUpdate();
             };
             proxy.Subscribe("GameFinished").Data += (object[] args) =>
