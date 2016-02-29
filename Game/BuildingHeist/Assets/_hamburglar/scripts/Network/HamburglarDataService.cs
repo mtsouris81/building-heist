@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using Hamburglar.Core;
 using System;
 using Hamburglar;
-using System.Runtime.Serialization;
 using System.Reflection;
 using System.ComponentModel;
+using Weenus.Network;
 
 public class HamburglarDataService : MonoBehaviour
 {
@@ -148,19 +147,32 @@ public class HamburglarDataService : MonoBehaviour
         {
             while (context.Messaging.CaughtMessages.Count > 0)
             {
-                var q = context.Messaging.CaughtMessages.Dequeue();
-                switch (q.Type)
+                var m = context.Messaging.CaughtMessages.Dequeue();
+                if (m.IsImmediateResponse && m.Callback != null)
                 {
-                    case MessagingClient.IncomingMessageType.GameUpdate:
+                    // handle simple immediate response
+                    m.Callback();
+                    continue;
+                }
+
+                HeistCaughtMessage q = m as HeistCaughtMessage;
+                if (q == null)
+                {
+                    continue;
+                }
+
+                switch (q.Tag)
+                {
+                    case IncomingMessageType.GameUpdate:
                         UnityEngine.Debug.Log("game update from message");
                         context.Messaging.GameUpdateCallback(q.Response);
                         break;
-                    case MessagingClient.IncomingMessageType.LootResult:
+                    case IncomingMessageType.LootResult:
                         break;
-                    case MessagingClient.IncomingMessageType.ImmediateResponse:
+                    case IncomingMessageType.ImmediateResponse:
                         q.Callback();
                         break;
-                    case MessagingClient.IncomingMessageType.OpponentTrapped:
+                    case IncomingMessageType.OpponentTrapped:
                         UnityEngine.Debug.Log("someone got trapped!");
 
                         if (q.PlayerId.Equals(this.PlayerId) && q.OpponentId.Equals(this.PlayerId))
@@ -183,7 +195,7 @@ public class HamburglarDataService : MonoBehaviour
                         }
 
                         break;
-                    case MessagingClient.IncomingMessageType.OpponentCaught:
+                    case IncomingMessageType.OpponentCaught:
 
                         UnityEngine.Debug.Log("someone got caught!");
 
@@ -221,53 +233,54 @@ public class HamburglarDataService : MonoBehaviour
         var gameData = data as WebGameTransport;
         if (gameData != null)
         {
-
-
             Debug.Log(string.Format("floors:{0} rooms:{1} start room: {2} floor {3}", gameData.game.d.floors, gameData.game.d.roomsPerFloor, gameData.me.d.room, gameData.me.d.floor));
-
             context.PlayerStartRoom = gameData.me.d.room;
             context.Floor = gameData.me.d.floor;
             context.BuildingData = GameTransport.ToGame(gameData);
             context.Building.TotalFloors = context.BuildingData.Floors;
             context.Building.RoomsPerFloor = context.BuildingData.RoomsPerFloor;
 
-            if (context.Building.TotalFloors > Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS)
-            {
-                context.Building.TotalFloors = Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS;
-            }
-            if (context.Building.RoomsPerFloor > Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR)
-            {
-                context.Building.RoomsPerFloor = Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR;
-            }
-            if (context.Floor >= Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS)
-            {
-                context.Floor = Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS - 1;
-            }
-            if (context.PlayerStartRoom.GetValueOrDefault() >= Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR)
-            {
-                context.PlayerStartRoom = Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR - 1;
-            }
+            EnforceBuildingSizeConstraints();
 
             context.Building.Build();
             context.OnGameDataUpdatedAndLoaded();
             MobileUIManager.Current.Manager.StartPlayMode();
             context.ClearGamePrompts();
-            context.Messaging.OnConnectedCallback = () =>
-            {
-                this.WebLoadingDisplay.gameObject.SetActive(false);
-                HamburglarContext.Instance.SetFloatingMessage("Connected to game server");
-            };
             this.WebLoadingDisplay.gameObject.SetActive(true);
-            context.Messaging.Connect(context.PlayerId, UpdateGameDataFromServiceResponse);
+            context.Messaging.ConnectToHeistGame(context.PlayerId, UpdateGameDataFromServiceResponse);
         }
     }
+
+    private void EnforceBuildingSizeConstraints()
+    {
+        if (context.Building.TotalFloors > Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS)
+        {
+            context.Building.TotalFloors = Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS;
+        }
+        if (context.Building.RoomsPerFloor > Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR)
+        {
+            context.Building.RoomsPerFloor = Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR;
+        }
+        if (context.Floor >= Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS)
+        {
+            context.Floor = Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS - 1;
+        }
+        if (context.PlayerStartRoom.GetValueOrDefault() >= Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR)
+        {
+            context.PlayerStartRoom = Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR - 1;
+        }
+    }
+
     public void StartGame(string gameId)
     {
         if (gameId.Equals("tutorial", StringComparison.OrdinalIgnoreCase))
         {
+            // game with ID "tutorial" is special. instead of loading from web
+            // the tutorial game is loaded from internal resources
             StartTutorial();
             return;
         }
+        // all other games are loaded from a web service call
         context.Service.Call("game", UrlResolver.Game(gameId), OnFullGameLoaded);
     }
 
@@ -281,8 +294,8 @@ public class HamburglarDataService : MonoBehaviour
         context.Building.RoomsPerFloor = context.BuildingData.RoomsPerFloor;
         context.Building.Build();
         context.OnGameDataUpdatedAndLoaded();
-        MobileUIManager.Current.Manager.StartPlayMode();
-        HamburglarTutorial.StartTutorial();
+        MobileUIManager.Current.Manager.StartPlayMode(); // the App Menu UI to go away for game play mode
+        HamburglarTutorial.StartTutorial(); 
     }
     private WebGameTransport CreateGameForTutorial()
     {

@@ -8,7 +8,6 @@ public class OStylesheetEditor : Editor
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
-
         StyleSheet myScript = (StyleSheet)target;
         if (GUILayout.Button("Apply Styles"))
         {

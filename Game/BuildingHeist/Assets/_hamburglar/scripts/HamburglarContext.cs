@@ -236,8 +236,3 @@ public class HamburglarContext : MonoBehaviour {
     }
 
 }
-public enum HamburglarViewMode
-{
-    Room,
-    Building
-}
