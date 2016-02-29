@@ -53,8 +53,6 @@ namespace Hamburglar.Server
                 "SignUp",
                 "api/signup/{username}");
         }
-
-
     }
     public static class _routeExtensions
     {
