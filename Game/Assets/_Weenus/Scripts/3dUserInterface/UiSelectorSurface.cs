@@ -284,7 +284,6 @@ public class UiSelectorSurface : MonoBehaviour, IPointerDownHandler, IPointerUpH
             if (wheelMove != 0)
             {
                 lastZoomScroll = wheelMove;
-                Debug.Log(lastZoomScroll);
                 twoToucheIndicies.Clear();
                 twoToucheIndicies.Add(GetScreenCenter());
                 twoToucheIndicies.Add(GetScreenCenter() + (Vector2.up * lastZoomScroll));

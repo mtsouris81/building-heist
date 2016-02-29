@@ -61,7 +61,6 @@ public class HamburglarUiGamesList : MonoBehaviour {
         {
             scrollList.BindableList.boundItems[0].SendMessage("IgnoreStyles", true, SendMessageOptions.RequireReceiver);
             scrollList.BindableList.boundItems[0].SetTextColor(Color.yellow, Color.yellow);
-            Debug.Log("set color");
         }
     }
 
@@ -70,7 +69,6 @@ public class HamburglarUiGamesList : MonoBehaviour {
         if (string.IsNullOrEmpty(HamburglarContext.Instance.PlayerId))
         {
             MobileUIManager.Current.Manager.SwitchToScreen("login");
-            Debug.LogError("not signed in!");
             return;
         }
         GetGamesList();

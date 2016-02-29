@@ -91,7 +91,6 @@ public class HamburglarSelectorSurface : UiSelectorSurface
                         return;
                     }
                     int value = x.Value.Item.CheckForLoot();
-                    Debug.Log(string.Format("loot value {0}", value));
                     if (value < 0)
                     {
                         HamburglarContext.Instance.Service.LootServiceCall(item.LootIndex, 0);

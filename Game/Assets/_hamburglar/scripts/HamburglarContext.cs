@@ -198,7 +198,6 @@ public class HamburglarContext : MonoBehaviour {
         else
         {
             Room = PlayerStartRoom.Value;
-            Debug.Log(string.Format("start in {0}-{1}", Floor, Room));
             SetView(HamburglarViewMode.Room);
         }
         UpdateFloorDoors();

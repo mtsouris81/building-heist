@@ -80,10 +80,8 @@ public class RoomItem : MonoBehaviour {
     {
         if (HamburglarContext.Instance.BuildingData != null)
         {
-            Debug.Log(string.Format("check loot {0} - {1} - {2}", Floor, Room, LootIndex));
             return HamburglarContext.Instance.BuildingData.Building.Floors[Floor].Rooms[Room, LootIndex];
         }
-        Debug.Log(string.Format("CHECKING FOR LOOT {0}-{1}-{2}", Floor, Room, LootIndex));
         return 0;
     }
 }

@@ -50,7 +50,6 @@ public class LootPrompt : HamburglarDisplayPrompt
     public void ShowDisplay(Vector3 screenPos, RoomItem roomItem, float value, bool showTrap, int lootIndex)
     {
         LootIndex = lootIndex;
-        Debug.Log(screenPos);
         HamburglarContext.Instance.UISpawnContainer.gameObject.SetActive(true);
         var itemScreenPos = HamburglarContext.Instance.RoomCamera.WorldToScreenPoint(roomItem.transform.position);
 
