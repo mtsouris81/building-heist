@@ -9,16 +9,16 @@ namespace Hamburglar.Server
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
+            // will use this later, but not right now, that's why i didn't just delete the whole file. 
 
-            // Web API routes
-            config.MapHttpAttributeRoutes();
-
-            config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+            //// Web API configuration and services
+            //// Web API routes
+            //config.MapHttpAttributeRoutes();
+            //config.Routes.MapHttpRoute(
+            //    name: "DefaultApi",
+            //    routeTemplate: "api/{controller}/{id}",
+            //    defaults: new { id = RouteParameter.Optional }
+            //);
         }
     }
 }

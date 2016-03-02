@@ -11,13 +11,27 @@ namespace Hamburglar.Server
         public void Configuration(IAppBuilder app)
         {
             var redisConnection = ConfigurationManager.ConnectionStrings["Redis"];
-            GlobalHost.DependencyResolver.UseRedis(
-                                        new RedisScaleoutConfiguration(
-                                            redisConnection.ConnectionString,
-                                            redisConnection.ProviderName));
+
+            if (IsBackpaneEnabled())
+            {
+                int port = 6379;
+                int.TryParse(ConfigurationManager.AppSettings["heist:BackpanePort"], out port);
+                GlobalHost.DependencyResolver.UseRedis(
+                    ConfigurationManager.AppSettings["heist:BackpaneHost"],
+                    port,
+                    ConfigurationManager.AppSettings["heist:BackpanePassword"],
+                    "heist");
+            }
 
             GlobalHost.DependencyResolver.Register(typeof(IUserIdProvider), () => new WebUserIdProvider());
             app.MapSignalR();
+        }
+
+        public bool IsBackpaneEnabled()
+        {
+            bool result = false;
+            bool.TryParse(ConfigurationManager.AppSettings["heist:BackpaneEnabled"], out result);
+            return result;
         }
     }
 }
