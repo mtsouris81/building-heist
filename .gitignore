@@ -29,3 +29,5 @@ ExportedObj/
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
+/Game/Assets/Resources/hosts.txt
+/Game/Assets/Resources/hosts.txt.meta

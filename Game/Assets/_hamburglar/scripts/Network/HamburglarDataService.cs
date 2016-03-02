@@ -6,6 +6,7 @@ using Hamburglar;
 using System.Reflection;
 using System.ComponentModel;
 using Weenus.Network;
+using System.IO;
 
 namespace Hamburglar
 {
@@ -33,7 +34,7 @@ namespace Hamburglar
 
         void Start()
         {
-            UrlResolver.Host = this.Host.GetDescription();
+            UrlResolver.Host = GetConfiguredHost();
             Debug.Log(string.Format("Service Environment : {0} - url : {1}", this.Host, UrlResolver.Host));
             services.Add(new JsonWebServiceCall<string>("login"));
             services.Add(new JsonWebServiceCall<WebGameTransport>("create"));
@@ -56,6 +57,50 @@ namespace Hamburglar
                     Color.red);
             };
         }
+
+        private string GetConfiguredHost()
+        {
+            try
+            {
+                var hosts = Resources.Load<TextAsset>("hosts");
+                Dictionary<string, string> HostsUrlLookup = ParseUrlLookUp(hosts.text);
+                string key = this.Host.ToString().ToLower();
+                return HostsUrlLookup[key];
+            }
+            catch
+            {
+                HamburglarContext.Instance.SetFloatingMessage("Unable to load hosts file.", Color.red);
+                throw;
+            }
+        }
+
+        private Dictionary<string, string> ParseUrlLookUp(string text)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            string[] lines = text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            foreach(var line in lines)
+            {
+                if (string.IsNullOrEmpty(line.Trim()))
+                    continue;
+
+                var firstSpaceIndex = line.IndexOf(' ');
+                if (firstSpaceIndex < 0)
+                    continue;
+
+                var name = line.Substring(0, firstSpaceIndex).Trim();
+                var url = line.Substring(firstSpaceIndex).Trim();
+                if (result.ContainsKey(name))
+                {
+                    result[name] = url;
+                }
+                else
+                {
+                    result.Add(name, url);
+                }
+            }
+            return result;
+        }
+
         public void OnApplicationQuit()
         {
             if (context != null && context.Messaging != null)
