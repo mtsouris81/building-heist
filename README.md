@@ -50,6 +50,8 @@ You need these tools to get started: [all free!!!]
 	If you use a host name other than "localhost", you can update the hosts file for the environment you want. 
 	
 3. Open project with Unity3D
+
+4. Open the scene : \Game\Assets\Scene\Main.unity
 	
 4. Run the game!
 	
