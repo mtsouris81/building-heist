@@ -115,6 +115,104 @@ namespace Hamburglar.Server.Controllers
             string json = JsonConvert.SerializeObject(model);
             return Content(json, "text/json");
         }
-    }
 
+
+        // FRIEND STUFF
+        public ActionResult Friends(string playerId)
+        {
+            var friends = RelationalPersistence.GetFriendsForPlayer(playerId);
+            var friendRequests = RelationalPersistence.GetFriendRequests(playerId);
+            var pendingFriends = RelationalPersistence.GetPendingFriends(playerId);
+            var model = new FriendListResult(friends, friendRequests, pendingFriends);
+            return JsonData(model);
+        }
+        public ActionResult SearchPlayers(string search)
+        {
+            var players = RelationalPersistence.SearchPlayers(search);
+            var model = new PlayerListResult(players);
+            return JsonData(model);
+        }
+        public ActionResult PendingFriends(string playerId)
+        {
+            var players = RelationalPersistence.GetPendingFriends(playerId);
+            var model = new PlayerListResult(players);
+            return JsonData(model);
+        }
+        public ActionResult GetGamesForPlayers(string playerId, string otherPlayerId)
+        {
+            var games = RelationalPersistence.GetGamesForPairOfPlayers(playerId, otherPlayerId);
+            var model = new GameListResult(games);
+            return JsonData(model);
+        }
+        public ActionResult RequestFriend(string playerId, string friendId)
+        {
+            if (RelationalPersistence.IsPendingFriend(playerId, friendId))
+            {
+                // already a requested friend, create confirmed friendship
+                RelationalPersistence.AddFriend(playerId, friendId);
+                RelationalPersistence.DeletePendingFriend(friendId, playerId);
+                var player = RelationalPersistence.GetPlayerById(friendId);
+                return JsonData(new BaseTransport()
+                {
+                    s = true,
+                    m = $"You are now friends with {player.Username}!"
+                });
+            }
+            else
+            {
+                RelationalPersistence.AddPendingFriend(playerId, friendId);
+                return JsonData(new BaseTransport()
+                {
+                    s = true,
+                    m = "Friend request sent!"
+                });
+            }
+        }
+        public ActionResult RejectFriendRequest(string playerId, string friendId)
+        {
+            RelationalPersistence.DeletePendingFriend(friendId, playerId);
+            return JsonData(new BaseTransport() { s = true });
+        }
+        public ActionResult DeleteFriend(string playerId, string friendId)
+        {
+            RelationalPersistence.RemoveFriend(friendId, playerId);
+            return JsonData(new BaseTransport() { s = true });
+        }
+        public ActionResult AcceptFriend(string playerId, string friendId)
+        {
+            RelationalPersistence.AddFriend(playerId, friendId);
+            RelationalPersistence.DeletePendingFriend(friendId, playerId);
+            var player = RelationalPersistence.GetPlayerById(friendId);
+            return JsonData(new BaseTransport()
+            {
+                s = true,
+                m = $"You are now friends with {player.Username}!"
+            });
+        }
+        
+        
+        //string[] usernames = 
+        //{
+        //    "Henry",
+        //    "Bob",
+        //    "Brad",
+        //    "Norm",
+        //    "Joe",
+        //    "Bill",
+        //    "Brian",
+        //    "Eugene",
+        //    "Harold",
+        //    "Reggie",
+        //    "Bert",
+        //    "Bernard"
+        //};
+        //public void CreateUsers(string[] usernames)
+        //{
+        //    foreach(var u in usernames)
+        //    {
+        //        RelationalPersistence.CreatePlayer(u, Guid.NewGuid().ToString("N"), "", "1");
+        //    }
+        //}
+        
+    }
 }

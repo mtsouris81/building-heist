@@ -93,6 +93,9 @@ public class HamburglarSelectorSurface : UiSelectorSurface
                     int value = x.Value.Item.CheckForLoot();
                     if (value < 0)
                     {
+                        item.ActivateTrapEffect();
+                        HamburglarContext.Instance.RoomCamera.GetComponent<Shaker>().StartShaking();
+                        HamburglarContext.Instance.GetCurrentRoom().StartLightFlicker();
                         HamburglarContext.Instance.Service.LootServiceCall(item.LootIndex, 0);
                     }
                     else

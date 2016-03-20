@@ -13,6 +13,7 @@ public class RoomBuilder : MonoBehaviour
     public RoomWall WallPartPrefab = null;
     public Light LightPrefab = null;
     public RoomItemParticles ParticlesPrefab = null;
+    public Transform HandsPrefab = null;
     public UnityEngine.Object RoomItemAnimationController = null;
 
     // private
@@ -70,6 +71,7 @@ public class RoomBuilder : MonoBehaviour
             UnityEngine.Random.Range(MinDimensions.z, MaxDimensions.z));
 
         var _light = GameObject.Instantiate(LightPrefab, Vector3.zero, Quaternion.identity) as Light;
+        var _blacklight = GameObject.Instantiate(LightPrefab, Vector3.zero, Quaternion.identity) as Light;
         wallLeft = GameObject.Instantiate(WallPartPrefab, Vector3.zero, Quaternion.identity) as RoomWall;
         wallRight = GameObject.Instantiate(WallPartPrefab, Vector3.zero, Quaternion.identity) as RoomWall;
         wallBack = GameObject.Instantiate(WallPartPrefab, Vector3.zero, Quaternion.identity) as RoomWall;
@@ -92,6 +94,7 @@ public class RoomBuilder : MonoBehaviour
         floor.transform.SetParent(room.transform);
         ceiling.transform.SetParent(room.transform);
         _light.transform.SetParent(room.transform);
+        _blacklight.transform.SetParent(room.transform);
 
         floor.transform.localScale = new Vector3(Dimensions.x, 0.1f, Dimensions.z);
         ceiling.transform.localScale = new Vector3(Dimensions.x, 0.1f, Dimensions.z);
@@ -100,9 +103,11 @@ public class RoomBuilder : MonoBehaviour
         wallBack.SetSize(Dimensions.x, Dimensions.y);
 
         _light.transform.localPosition = Vector3.zero;
+        _blacklight.transform.localPosition = Vector3.zero;
         floor.transform.localPosition = Vector3.zero;
         ceiling.transform.localPosition = Vector3.zero;
         _light.transform.localPosition += Vector3.up * Dimensions.y;
+        _blacklight.transform.localPosition += Vector3.up * Dimensions.y;
         wallLeft.transform.localPosition = new Vector3(Dimensions.x * 0.5f, 0, 0);
         wallRight.transform.localPosition = new Vector3(-(Dimensions.x * 0.5f), 0, 0);
         wallBack.transform.localPosition = new Vector3(0, 0, (Dimensions.z * 0.5f));
@@ -111,6 +116,7 @@ public class RoomBuilder : MonoBehaviour
         wallRight.transform.localRotation = Quaternion.Euler(Vector3.up * -90);
 
         _light.range = (Dimensions.x + Dimensions.z) * 2;
+        _blacklight.range = 5; // (Dimensions.x + Dimensions.z) * 2;
 
         BedSide = (RoomSide)UnityEngine.Random.Range(0, 2);
         SideAssignmentOrder.Remove(BedSide);
@@ -121,6 +127,12 @@ public class RoomBuilder : MonoBehaviour
 
         SetWallMaterial(wallMaterial);
         SetFloorMaterial(floorMaterial);
+
+        _blacklight.color = Color.Lerp(Color.red, Color.blue, .5f);
+        _blacklight.intensity = 4;
+        _blacklight.gameObject.SetActive(false);
+        roomComponent.Blacklight = _blacklight;
+        roomComponent.RoomLight = _light;
 
         return BuiltRooms.Count - 1;
     }
@@ -172,6 +184,7 @@ public class RoomBuilder : MonoBehaviour
         var particles = GameObject.Instantiate(this.ParticlesPrefab) as RoomItemParticles;
         particles.transform.SetParent(result.transform);
         particles.transform.localPosition = Vector3.zero;
+        particles.transform.localRotation = Quaternion.identity;
         result.Particles = particles;
 
         var innerContainer = new GameObject("InnerContainer");
@@ -241,6 +254,19 @@ public class RoomBuilder : MonoBehaviour
         item.transform.localPosition += Vector3.back * 0.5f;
         item.transform.localScale = new Vector3(size.x, size.y, 1);
         assignedFurniture.Add(furnitureType);
+
+        if (furnitureType != FurnitureType.Door)
+        {
+            var hands = GameObject.Instantiate<Transform>(HandsPrefab);
+            hands.SetParent(item.transform, true);
+            hands.localPosition = Vector3.zero + (Vector3.back * 0.505f);
+            hands.localRotation = Quaternion.identity;
+            item.Hands = hands;
+        }
+
+        item.HideHands();
+
+
         return size.x;
     }
     private Transform GetWall(RoomSide side)

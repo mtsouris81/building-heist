@@ -39,9 +39,14 @@ public class HamburglarAppMenu : MonoBehaviour {
         MenuAnimationTimer.AccurateMode = true;
 
 
-        View.SetClickHandler("games", true, delegate()
+        View.SetClickHandler("games", true, delegate ()
         {
             View.UI.SwitchToScreen("games");
+            View.UI.CloseAppMenu();
+        });
+        View.SetClickHandler("friends", true, delegate ()
+        {
+            View.UI.SwitchToScreen("friends");
             View.UI.CloseAppMenu();
         });
         View.SetClickHandler("exit", true, delegate()

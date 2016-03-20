@@ -8,6 +8,8 @@
         <EntityTypeShape EntityType="BuildingHeistModel.Game" Width="1.5" PointX="1" PointY="0.75" />
         <EntityTypeShape EntityType="BuildingHeistModel.Player" Width="1.5" PointX="3.375" PointY="3.125" />
         <AssociationConnector Association="BuildingHeistModel.GamePlayers" />
+        <EntityTypeShape EntityType="BuildingHeistModel.FriendRequest" Width="1.5" PointX="6" PointY="1.875" />
+        <EntityTypeShape EntityType="BuildingHeistModel.PlayerFriend" Width="1.5" PointX="6" PointY="3.5" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -54,13 +54,13 @@ public class BuildingManager : MonoBehaviour {
     {
         DestroyBuilding();
         // enforce max to avoid memory errors or tampering with http responses
-        if (TotalFloors > Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS)
+        if (TotalFloors > Hamburglar.Core.Game.MAX_GAME_FLOORS)
         {
-            TotalFloors = Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS;
+            TotalFloors = Hamburglar.Core.Game.MAX_GAME_FLOORS;
         }
-        if (RoomsPerFloor > Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR)
+        if (RoomsPerFloor > Hamburglar.Core.Game.MAX_GAME_ROOMS_PER_FLOOR)
         {
-            RoomsPerFloor = Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR;
+            RoomsPerFloor = Hamburglar.Core.Game.MAX_GAME_ROOMS_PER_FLOOR;
         }
 
         floors = new BuildingFloor[TotalFloors];

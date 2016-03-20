@@ -139,3 +139,35 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[GamePlayers] CHECK CONSTRAINT [FK_GamePlayers_Player]
 GO
+
+
+
+CREATE TABLE [dbo].[PlayerFriends](
+	[PlayerId_1] [int] NOT NULL,
+	[PlayerId_2] [int] NOT NULL,
+ CONSTRAINT [PK_PlayerFriends] PRIMARY KEY CLUSTERED 
+(
+	[PlayerId_1] ASC,
+	[PlayerId_2] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+CREATE TABLE [dbo].[FriendRequests](
+	[RequestingPlayerId] [int] NOT NULL,
+	[PlayerId] [int] NOT NULL,
+ CONSTRAINT [PK_FriendRequests] PRIMARY KEY CLUSTERED 
+(
+	[RequestingPlayerId] ASC,
+	[PlayerId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+
+
+
+
+

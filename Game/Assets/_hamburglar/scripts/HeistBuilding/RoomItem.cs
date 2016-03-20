@@ -13,9 +13,23 @@ public class RoomItem : MonoBehaviour {
     public RoomItemParticles Particles { get; set; }
     public Animator ItemAnimation { get; set; }
     public Action<RoomItem> AnimationFinishedCallback { get; set; }
-
+    public Transform Hands { get; set; }
     int particleBurstAmount = 11;
 
+    public void ShowHands()
+    {
+        if (Hands != null)
+        {
+            Hands.gameObject.SetActive(true);
+        }
+    }
+    public void HideHands()
+    {
+        if (Hands != null)
+        {
+            Hands.gameObject.SetActive(false);
+        }
+    }
     void Start () {
         //ItemAnimation = GetComponentInChildren<Animator>();
 	}
@@ -27,12 +41,14 @@ public class RoomItem : MonoBehaviour {
     public void ActivateMoneyParticles()
     {
         if (Particles != null)
-            Particles.Money.Emit(particleBurstAmount);
+            Particles.Money.BurstOnce(particleBurstAmount);
     }
     public void ActivateTrapParticles()
     {
         if (Particles != null)
-            Particles.Trap.Emit(particleBurstAmount);
+        {
+            Particles.Trap.BurstOnce(particleBurstAmount);
+        }
     }
     public void OnShakeAnimationFinished()
     {
@@ -83,5 +99,10 @@ public class RoomItem : MonoBehaviour {
             return HamburglarContext.Instance.BuildingData.Building.Floors[Floor].Rooms[Room, LootIndex];
         }
         return 0;
+    }
+
+    public void ActivateTrapEffect()
+    {
+        Particles.TrapEffect.BurstOnce(Particles.TrapEffectBurstCount);
     }
 }

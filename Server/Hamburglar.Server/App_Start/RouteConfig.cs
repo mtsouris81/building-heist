@@ -15,43 +15,76 @@ namespace Hamburglar.Server
 
             routes.MapApi(
                 "Loot",
-                "api/loot/{gameId}/{playerId}/{floor}/{room}/{itemIndex}/{trapId}");
+                "loot/{gameId}/{playerId}/{floor}/{room}/{itemIndex}/{trapId}");
 
             routes.MapApi(
                 "EnterRoom",
-                "api/enterroom/{gameId}/{playerId}/{floor}/{room}");
+                "enterroom/{gameId}/{playerId}/{floor}/{room}");
 
             routes.MapApi(
                 "ExitRoom",
-                "api/exitroom/{gameId}/{playerId}/{floor}/{room}");
+                "exitroom/{gameId}/{playerId}/{floor}/{room}");
 
             routes.MapApi(
                 "Create",
-                "api/creategame/{playerid}/{floors}/{rooms}/{title}");
+                "creategame/{playerid}/{floors}/{rooms}/{title}");
 
             routes.MapApi(
                 "GameUpdate",
-                "api/update/{gameId}/{playerId}/{floor}");
+                "update/{gameId}/{playerId}/{floor}");
 
             routes.MapApi(
                 "CheckForMessages",
-                "api/messages/{gameId}/{playerId}/{highestMessage}");
+                "messages/{gameId}/{playerId}/{highestMessage}");
 
             routes.MapApi(
                 "Game",
-                "api/game/{gameId}/{playerId}");
+                "game/{gameId}/{playerId}");
 
             routes.MapApi(
                 "Games",
-                "api/games/{playerId}");
+                "games/{playerId}");
 
             routes.MapApi(
                 "Login",
-                "api/Login/{username}");
+                "Login/{username}");
 
             routes.MapApi(
                 "SignUp",
-                "api/signup/{username}");
+                "signup/{username}");
+
+            routes.MapApi(
+                "SearchPlayers",
+                "players/{search}");
+
+
+            routes.MapApi(
+                "RequestFriend",
+                "friends/{playerId}/request/{friendId}");
+
+            routes.MapApi(
+                "RejectFriendRequest",
+                "friends/{playerId}/reject/{friendId}");
+
+            routes.MapApi(
+                "DeleteFriend",
+                "friends/{playerId}/delete/{friendId}");
+
+            routes.MapApi(
+                "AcceptFriend",
+                "friends/{playerId}/accept/{friendId}");
+
+            routes.MapApi(
+                "GetGamesForPlayers",
+                "friends/{playerId}/games/{otherPlayerId}");
+
+            routes.MapApi(
+                "PendingFriends",
+                "friends/{playerId}/pending");
+
+            routes.MapApi(
+                "Friends",
+                "friends/{playerId}");
         }
     }
     public static class _routeExtensions
@@ -62,7 +95,7 @@ namespace Hamburglar.Server
             mapNumber++;
             routes.MapRoute(
                 name: "Api" + mapNumber.ToString(),
-                url: url,
+                url: $"api/{url}",
                 defaults: new { controller = "Home", action = actionName }
             );
         }

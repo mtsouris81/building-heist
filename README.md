@@ -2,9 +2,16 @@
 by mike tsouris
 
 
+### Attributions to other people's work:
+The Unity application uses these free / open resources. 
+1. *SignalR Client* _The MIT License (MIT)_ https://github.com/jenyayel/SignalR.Client.20
+2. *Newtonsoft Json.NET* _The MIT License (MIT)_  https://www.nuget.org/packages/Newtonsoft.Json/
+3. *TurboSquid Models* ( some models in the game ) _Royalty Free License_ https://support.turbosquid.com/entries/31030006-Royalty-Free-License?locale=1
+
+
+
 
 ## Quick Setup:
-
 
 You need these tools to get started: [all free!!!]
 
@@ -14,6 +21,9 @@ You need these tools to get started: [all free!!!]
 - Redis ( Just need the binaries, easy to get from NuGet )
 - MongoDB
 - IIS
+
+
+
 
 
 	

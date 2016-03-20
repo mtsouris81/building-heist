@@ -47,7 +47,7 @@ public class LootMoneyDisplay : MonoBehaviour {
     public void StartDisplay(RoomItem item)
     {
         moveDistance = 0;
-        FollowOffset = Vector3.up * 1.8f;
+        FollowOffset = Vector3.up * 1.3f;
         FollowObject = item.transform;
         rect = GetComponent<RectTransform>();
     }

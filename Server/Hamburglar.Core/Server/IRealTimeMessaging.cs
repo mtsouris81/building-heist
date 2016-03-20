@@ -15,6 +15,7 @@ namespace Hamburglar.Core
         void OpponentCaught(Game game, string playerId, string opponentId);
         void NeedUpdate(Game game);
         void GameFinished(Game game);
+        void OnGameReady(Game game, DateTime now);
     }
 
 }

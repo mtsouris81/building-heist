@@ -29,7 +29,7 @@ namespace Hamburglar
         }
         public void JoinGame()
         {
-            SendMessage("JoinGame", HamburglarContext.Instance.BuildingData.Id);
+            SendMessage("JoinGame", HamburglarContext.Instance.BuildingData.Id, HamburglarContext.Instance.PlayerId, DateTime.UtcNow);
         }
         public void RoomChange(object[] args)
         {
@@ -134,6 +134,15 @@ namespace Hamburglar
                     PlayerId = args[0] as string
                 });
             };
+            proxy.Subscribe("GameReady").Data += (object[] args) =>
+            {
+                UnityEngine.Debug.Log("EVERYONE JOINED!");
+                CaughtMessages.Enqueue(new HeistCaughtMessage()
+                {
+                    Tag = IncomingMessageType.GameReady,
+                    StartTime = ((DateTime)args[0])
+                });
+            };
         }
         protected override void OnConnectionReady(object sender, EventArgs e)
         {
@@ -148,6 +157,7 @@ namespace Hamburglar
         public string OpponentId { get; set; }
         public int? Room { get; set; }
         public int? Floor { get; set; }
+        public DateTime? StartTime { get; set; }
     }
     public enum IncomingMessageType
     {
@@ -157,6 +167,7 @@ namespace Hamburglar
         LootResult,
         OpponentTrapped,
         OpponentCaught,
-        ImmediateResponse
+        ImmediateResponse,
+        GameReady
     }
 }

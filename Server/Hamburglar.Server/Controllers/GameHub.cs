@@ -26,10 +26,30 @@ namespace Hamburglar.Server.Controllers
         {
             return base.OnConnected();
         }
-        public void JoinGame(string gameId)
+        public void JoinGame(string gameId, string playerId, DateTime utc)
         {
+            DateTime now = DateTime.UtcNow;
             Groups.Add(Context.ConnectionId, gameId);
+            var game = GetGame(gameId);
+            var player = game.GetLocalPlayer(playerId);
+            game.Join(playerId);
+
+            if (game.RunningState == GameState.WaitingForAllToJoin)
+            {
+                if (game.HaveAllPlayersJoined())
+                {
+                    game.StartGame();
+                    player.UTCOffset = (int)(now - utc).TotalMilliseconds;
+                    SharedCache.SetGame(game);
+                    RealTimeMessaging.OnGameReady(game, DateTime.UtcNow);
+                }
+                else
+                {
+                    SharedCache.SetGame(game);
+                }
+            }
         }
+
         public WebGameTransport EnterRoom(string gameId, string playerId, int floor, int room)
         {
             return SetRoomOccupied(gameId, playerId, floor, room, true);

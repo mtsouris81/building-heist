@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System;
+using UnityEngine.Events;
 
 public class WeenusInputField : MonoBehaviour
 {
@@ -24,10 +26,13 @@ public class WeenusInputField : MonoBehaviour
         return result;
     }
 
+    public void OnChanged(UnityAction<string> changeCallback)
+    {
+        this.Input.onValueChanged.AddListener(changeCallback);
+    }
 
 
 	void Start () {
-	
 	}
 	
 

@@ -48,6 +48,11 @@ namespace Hamburglar.Providers
             var player = game.GetLocalPlayer(playerId);
             clients.Group(game.Id).RoomExited(player.Floor, player.Room, playerId);
         }
+        public void OnGameReady(Core.Game game, DateTime utcNow)
+        {
+            var clients = GetClientsContext();
+            clients.Group(game.Id).GameReady(utcNow);
+        }
         private IHubConnectionContext<dynamic> GetClientsContext()
         {
             return GlobalHost.ConnectionManager.GetHubContext<THub>().Clients;

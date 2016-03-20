@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using GiveUp.Core;
+using UnityEngine.Events;
 
 namespace Weenus
 {
@@ -81,6 +82,10 @@ namespace Weenus
             {
                 throw new Exception(string.Format("failed binding to field : {0}", name));
             }
+        }
+        public void SetOnChangedHandler(string name, UnityAction<string> callback)
+        {
+            FieldInput[name].OnChanged(callback);
         }
         public void SetClickHandler(string name, Action callback)
         {

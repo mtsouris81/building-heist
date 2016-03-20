@@ -56,7 +56,7 @@ public class LootPrompt : HamburglarDisplayPrompt
         if (value > 0)
         {
             var display = GameObject.Instantiate(MoneyDisplay) as LootMoneyDisplay;
-            display.transform.SetParent(HamburglarContext.Instance.UISpawnContainer.transform);
+            display.transform.SetParent(HamburglarContext.Instance.UISpawnContainer.transform, true);
             display.StartDisplay(roomItem);
             display.gameObject.SetActive(true);
             display.SetAmount((int)value);

@@ -59,8 +59,9 @@ public class HamburglarUiGamesList : MonoBehaviour {
         EmptyDataLine.gameObject.SetActive(items.Count < 2);
         if (scrollList.BindableList.boundItems.Count > 0)
         {
-            scrollList.BindableList.boundItems[0].SendMessage("IgnoreStyles", true, SendMessageOptions.RequireReceiver);
-            scrollList.BindableList.boundItems[0].SetTextColor(Color.yellow, Color.yellow);
+            BindableListItem item = scrollList.BindableList.boundItems[0].GetComponent<BindableListItem>();
+            item.SendMessage("IgnoreStyles", true, SendMessageOptions.RequireReceiver);
+            item.SetTextColor(Color.yellow, Color.yellow);
         }
     }
 

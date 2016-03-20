@@ -94,6 +94,18 @@ namespace Weenus
 
             return RegisteredScreens.Where(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().Screen;
         }
+        public T GetComponentFromScreen<T>(string name) where T : Component
+        {
+            if (name == null)
+                return null;
+
+            var screen = GetScreenByName(name);
+
+            if (screen == null)
+                return null;
+
+            return screen.GetComponent<T>();
+        }
         public ScreenRegistration GetRegistrationByName(string name)
         {
             return RegisteredScreens.Where(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();

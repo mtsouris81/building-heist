@@ -6,9 +6,12 @@ public class RoomItemParticles : MonoBehaviour {
 
     public ParticleSystem Money = null;
     public ParticleSystem Trap = null;
+    public ParticleSystem TrapEffect = null;
 
-	// Use this for initialization
-	void Start () {
+    public int TrapEffectBurstCount = 40;
+
+    // Use this for initialization
+    void Start () {
 	
 	}
 	

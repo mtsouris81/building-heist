@@ -5,6 +5,14 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="BuildingHeistModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="FriendRequests">
+          <Key>
+            <PropertyRef Name="RequestingPlayerId" />
+            <PropertyRef Name="PlayerId" />
+          </Key>
+          <Property Name="RequestingPlayerId" Type="int" Nullable="false" />
+          <Property Name="PlayerId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Game">
           <Key>
             <PropertyRef Name="dbId" />
@@ -32,6 +40,14 @@
           <Property Name="ProfileImage" Type="nvarchar" MaxLength="120" />
           <Property Name="Password" Type="nvarchar" MaxLength="120" Nullable="false" />
           <Property Name="Salt" Type="nvarchar" MaxLength="120" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PlayerFriends">
+          <Key>
+            <PropertyRef Name="PlayerId_1" />
+            <PropertyRef Name="PlayerId_2" />
+          </Key>
+          <Property Name="PlayerId_1" Type="int" Nullable="false" />
+          <Property Name="PlayerId_2" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_GamePlayers_Game">
           <End Role="Game" Type="Self.Game" Multiplicity="1">
@@ -62,9 +78,11 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="BuildingHeistModelStoreContainer">
+          <EntitySet Name="FriendRequests" EntityType="Self.FriendRequests" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Game" EntityType="Self.Game" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GamePlayers" EntityType="Self.GamePlayers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Player" EntityType="Self.Player" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlayerFriends" EntityType="Self.PlayerFriends" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_GamePlayers_Game" Association="Self.FK_GamePlayers_Game">
             <End Role="Game" EntitySet="Game" />
             <End Role="GamePlayers" EntitySet="GamePlayers" />
@@ -85,6 +103,8 @@
             <End Role="Game" EntitySet="Games" />
             <End Role="Player" EntitySet="Players" />
           </AssociationSet>
+          <EntitySet Name="FriendRequests" EntityType="BuildingHeistModel.FriendRequest" />
+          <EntitySet Name="PlayerFriends" EntityType="BuildingHeistModel.PlayerFriend" />
         </EntityContainer>
         <EntityType Name="Game">
           <Key>
@@ -112,6 +132,22 @@
           <End Type="BuildingHeistModel.Game" Role="Game" Multiplicity="*" />
           <End Type="BuildingHeistModel.Player" Role="Player" Multiplicity="*" />
         </Association>
+        <EntityType Name="FriendRequest">
+          <Key>
+            <PropertyRef Name="RequestingPlayerId" />
+            <PropertyRef Name="PlayerId" />
+          </Key>
+          <Property Name="RequestingPlayerId" Type="Int32" Nullable="false" />
+          <Property Name="PlayerId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PlayerFriend">
+          <Key>
+            <PropertyRef Name="PlayerId_1" />
+            <PropertyRef Name="PlayerId_2" />
+          </Key>
+          <Property Name="PlayerId_1" Type="Int32" Nullable="false" />
+          <Property Name="PlayerId_2" Type="Int32" Nullable="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -148,6 +184,22 @@
               <ScalarProperty Name="dbId" ColumnName="GameId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="FriendRequests">
+            <EntityTypeMapping TypeName="BuildingHeistModel.FriendRequest">
+              <MappingFragment StoreEntitySet="FriendRequests">
+                <ScalarProperty Name="PlayerId" ColumnName="PlayerId" />
+                <ScalarProperty Name="RequestingPlayerId" ColumnName="RequestingPlayerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlayerFriends">
+            <EntityTypeMapping TypeName="BuildingHeistModel.PlayerFriend">
+              <MappingFragment StoreEntitySet="PlayerFriends">
+                <ScalarProperty Name="PlayerId_2" ColumnName="PlayerId_2" />
+                <ScalarProperty Name="PlayerId_1" ColumnName="PlayerId_1" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

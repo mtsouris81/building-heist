@@ -33,7 +33,9 @@ namespace Hamburglar.Core
                         floors = sourceData.Floors,
                         roomsPerFloor = sourceData.RoomsPerFloor,
                         players = GetPlayerModels(sourceData.Players),
-                        buildingScore = sourceData.Building.TotalValue
+                        buildingScore = sourceData.Building.TotalValue,
+                        start= sourceData.StartUTC,
+                        state = sourceData.RunningState
                     }
                 };
                 if (sourceData.Winner != null)

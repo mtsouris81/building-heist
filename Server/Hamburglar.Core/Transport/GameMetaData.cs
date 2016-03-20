@@ -13,6 +13,7 @@ namespace Hamburglar.Core
         public int buildingScore { get; set; }
         public List<PlayerMetaData> players { get; set; }
         public PlayerMetaData winner { get; set; }
+        public DateTime? start { get; set; }
+        public GameState state { get; set; }
     }
-
 }

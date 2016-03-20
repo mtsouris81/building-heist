@@ -12,13 +12,10 @@ public class BindableList : MonoBehaviour {
     public VerticalLayoutGroup layoutGroup = null;
     public Action<BindableListItem> OnItemClicked { get; set; }
 
-    public List<BindableListItem> boundItems = new List<BindableListItem>();
+    public List<Transform> boundItems = new List<Transform>();
     public bool TrackSelection { get; set; }
 
-    public void BindList<T>(IEnumerable<T> list, Func<T, string> displayProperty, Func<T, object> valueProperty)
-    {
-        BindList<T>(list, displayProperty, valueProperty, null);
-    }
+
 
     public void ClearBindings()
     {
@@ -29,32 +26,53 @@ public class BindableList : MonoBehaviour {
         boundItems.Clear();
     }
 
-    public void BindList<T>(IEnumerable<T> list, Func<T, string> displayProperty, Func<T, object> valueProperty, Action<BindableListItem> postProcess)
+    public void BindList<T>(IEnumerable<T> list, Func<T, string> displayProperty, Func<T, object> valueProperty)
     {
-        ClearBindings();
+        BindList<T, T>(list, displayProperty, valueProperty, null);
+    }
+    public void BindList<T>(IEnumerable<T> list, Func<T, string> displayProperty, Func<T, object> valueProperty, bool appendToList)
+    {
+        BindList<T, T>(list, displayProperty, valueProperty, null, appendToList);
+    }
+    public void BindList<T, TCustomProcessType>(IEnumerable<T> list, Func<T, string> displayProperty, Func<T, object> valueProperty, Action<TCustomProcessType, string, object> postProcess)
+    {
+        BindList<T, TCustomProcessType>(list, displayProperty, valueProperty, postProcess, false);
+    }
+    public void BindList<T, TCustomProcessType>(IEnumerable<T> list, Func<T, string> displayProperty, Func<T, object> valueProperty, Action<TCustomProcessType, string, object> postProcess, bool appendToList)
+    {
+        if (!appendToList)
+        {
+            ClearBindings();
+        }
         if (list == null || list.Count() < 1)
         {
             return;
         }
         foreach (T item in list)
         {
-            BindableListItem newItem = GameObject.Instantiate(ItemTemplate) as BindableListItem;
-            newItem.gameObject.SetActive(true);
+            BindableListItem newItem = AddItemToList<BindableListItem>(ItemTemplate);
+            string display = displayProperty(item);
+            object value = valueProperty(item);
             newItem.TrackSelection = this.TrackSelection;
-            boundItems.Add(newItem);
-            newItem.transform.SetParent(this.transform, BindingConstants.WorldTransformStaysSame);
-            newItem.SetData(displayProperty(item), valueProperty(item));
+            newItem.SetData(display, value);
             newItem.OnClicked = OnItemClicked;
             if (postProcess != null)
             {
-                postProcess(newItem);
+                postProcess(newItem.GetComponent<TCustomProcessType>(), display, value);
             }
         }
     }
+    public T AddItemToList<T>(T original) where T : Component
+    {
+        T newItem = GameObject.Instantiate<T>(original);
+        newItem.gameObject.SetActive(true);
+        boundItems.Add(newItem.transform);
+        newItem.transform.SetParent(this.transform, BindingConstants.WorldTransformStaysSame);
+        return newItem;
+    }
 
-
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 	
 	}
 

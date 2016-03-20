@@ -27,5 +27,7 @@ namespace Hamburglar.Providers
     
         public virtual DbSet<Game> Games { get; set; }
         public virtual DbSet<Player> Players { get; set; }
+        public virtual DbSet<FriendRequest> FriendRequests { get; set; }
+        public virtual DbSet<PlayerFriend> PlayerFriends { get; set; }
     }
 }

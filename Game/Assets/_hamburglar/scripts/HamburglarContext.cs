@@ -18,6 +18,8 @@ public class HamburglarContext : MonoBehaviour {
     public ElevatorPrompt ElevatorPrompt = null;
     public HamburglarUiPopUp Popup = null;
     public HamburglarScoreDisplay ScoreDisplay = null;
+    public GameStartCountdown Countdown = null;
+    public RectTransform WaitingForPlayersDisplay = null;
     public Camera BuildingCamera = null;
     public Camera RoomCamera = null;
     public HamburglarSelectorSurface BuildingSurface = null;
@@ -232,6 +234,16 @@ public class HamburglarContext : MonoBehaviour {
             }
         }
         return null;
+    }
+
+    public BuildingRoom GetCurrentRoom()
+    {
+        return Instance
+                                    .Building
+                                    .GetRoom(
+                                        Instance.Floor,
+                                        Instance.Room)
+                                        .GetComponent<BuildingRoom>();
     }
 
 }

@@ -20,6 +20,8 @@ namespace Hamburglar
         Queue<QueuedRequest> RequestQueue = new Queue<QueuedRequest>();
         HamburglarContext context { get { return HamburglarContext.Instance; } }
 
+        public static float GameCountdownSeconds = 5;
+
         public string GameId
         {
             get { return HamburglarContext.Instance.BuildingData.Id; }
@@ -29,18 +31,27 @@ namespace Hamburglar
             get { return HamburglarContext.Instance.PlayerId; }
         }
 
-
-
-
         void Start()
         {
             UrlResolver.Host = GetConfiguredHost();
             Debug.Log(string.Format("Service Environment : {0} - url : {1}", this.Host, UrlResolver.Host));
+
             services.Add(new JsonWebServiceCall<string>("login"));
             services.Add(new JsonWebServiceCall<WebGameTransport>("create"));
             services.Add(new JsonWebServiceCall<GameListResult>("gamelist"));
             services.Add(new JsonWebServiceCall<WebGameTransport>("game"));
             services.Add(new JsonWebServiceCall<Player>("signup"));
+
+            services.Add(new JsonWebServiceCall<PlayerListResult>("search") { UseLoadingPrompt = false });
+
+            services.Add(new JsonWebServiceCall<BaseTransport>("friend.request"));
+            services.Add(new JsonWebServiceCall<BaseTransport>("friend.reject"));
+            services.Add(new JsonWebServiceCall<BaseTransport>("friend.delete"));
+            services.Add(new JsonWebServiceCall<BaseTransport>("friend.accept"));
+
+            services.Add(new JsonWebServiceCall<FriendListResult>("friend.get"));
+            services.Add(new JsonWebServiceCall<GameListResult>("friend.games"));
+
             foreach (var s in services)
             {
                 s.WebLoadingDisplay = WebLoadingDisplay.gameObject;
@@ -126,6 +137,7 @@ namespace Hamburglar
                 }
             }
         }
+
         public bool AreAnyServicesActive()
         {
             foreach (var s in services)
@@ -183,6 +195,9 @@ namespace Hamburglar
 
                     switch (q.Tag)
                     {
+                        case IncomingMessageType.GameReady:
+                            StartGameCountDown(q.StartTime);
+                            break;
                         case IncomingMessageType.GameUpdate:
                             context.Messaging.GameUpdateCallback(q.Response);
                             break;
@@ -195,7 +210,7 @@ namespace Hamburglar
 
                             if (q.PlayerId.Equals(this.PlayerId) && q.OpponentId.Equals(this.PlayerId))
                             {
-                                HamburglarContext.Instance.Popup.Show("You fell for one of your own traps!", Color.red);
+                                HamburglarContext.Instance.SetFloatingMessage("You fell for one of your own traps!", Color.red);
                             }
                             else if (q.OpponentId.Equals(this.PlayerId))
                             {
@@ -237,6 +252,34 @@ namespace Hamburglar
             }
         }
 
+        private void StartGameCountDown(DateTime? startTime)
+        {
+            try
+            {
+                HamburglarContext.Instance.WaitingForPlayersDisplay.gameObject.SetActive(false);
+                float totalSeconds = 0;
+                if (startTime.HasValue)
+                {
+                    DateTime hardStartTime = startTime.Value.AddSeconds(Game.COUNTDOWN_TIME_SECONDS);
+                    int? TimeOffsetMilliseconds = HamburglarContext.Instance.BuildingData.GetLocalPlayer(HamburglarContext.Instance.PlayerId).UTCOffset;
+                    DateTime adjustedNow = DateTime.UtcNow.AddMilliseconds(TimeOffsetMilliseconds.GetValueOrDefault());
+                    totalSeconds = (float)(hardStartTime - adjustedNow).TotalSeconds;
+                }
+                if (totalSeconds > 0)
+                {
+                    HamburglarContext.Instance.Countdown.StartCountdown(totalSeconds, null);
+                }
+                else
+                {
+                    HamburglarContext.Instance.Countdown.gameObject.SetActive(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Log(ex.Message);
+            }
+        }
+
         public class QueuedRequest
         {
             public string name;
@@ -264,25 +307,35 @@ namespace Hamburglar
                 context.ClearGamePrompts();
                 this.WebLoadingDisplay.gameObject.SetActive(true);
                 context.Messaging.ConnectToHeistGame(context.PlayerId, UpdateGameDataFromServiceResponse);
+
+                if (context.BuildingData.RunningState == GameState.WaitingForAllToJoin)
+                {
+                    context.WaitingForPlayersDisplay.gameObject.SetActive(true);
+                }
+                else if (context.BuildingData.StartUTC.HasValue)
+                {
+                    context.WaitingForPlayersDisplay.gameObject.SetActive(false);
+                    StartGameCountDown(context.BuildingData.StartUTC.Value);
+                }
             }
         }
         private void EnforceBuildingSizeConstraints()
         {
-            if (context.Building.TotalFloors > Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS)
+            if (context.Building.TotalFloors > Hamburglar.Core.Game.MAX_GAME_FLOORS)
             {
-                context.Building.TotalFloors = Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS;
+                context.Building.TotalFloors = Hamburglar.Core.Game.MAX_GAME_FLOORS;
             }
-            if (context.Building.RoomsPerFloor > Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR)
+            if (context.Building.RoomsPerFloor > Hamburglar.Core.Game.MAX_GAME_ROOMS_PER_FLOOR)
             {
-                context.Building.RoomsPerFloor = Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR;
+                context.Building.RoomsPerFloor = Hamburglar.Core.Game.MAX_GAME_ROOMS_PER_FLOOR;
             }
-            if (context.Floor >= Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS)
+            if (context.Floor >= Hamburglar.Core.Game.MAX_GAME_FLOORS)
             {
-                context.Floor = Hamburglar.Core.GameDataManager.MAX_GAME_FLOORS - 1;
+                context.Floor = Hamburglar.Core.Game.MAX_GAME_FLOORS - 1;
             }
-            if (context.PlayerStartRoom.GetValueOrDefault() >= Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR)
+            if (context.PlayerStartRoom.GetValueOrDefault() >= Hamburglar.Core.Game.MAX_GAME_ROOMS_PER_FLOOR)
             {
-                context.PlayerStartRoom = Hamburglar.Core.GameDataManager.MAX_GAME_ROOMS_PER_FLOOR - 1;
+                context.PlayerStartRoom = Hamburglar.Core.Game.MAX_GAME_ROOMS_PER_FLOOR - 1;
             }
         }
         public void StartGame(string gameId)
@@ -428,6 +481,39 @@ namespace Hamburglar
                 context.OnGameDataUpdatedAndLoaded();
                 context.SetView(HamburglarViewMode.Building, true);
             }
+        }
+
+        public void SearchPlayers(string search, Action<PlayerListResult> callback)
+        {
+            Call("search", UrlResolver.SearchPlayers(search), (x) => { callback(x as PlayerListResult); });
+        }
+        public void FriendRequest(string friendId, Action<BaseTransport> callback)
+        {
+            Call("friend.request", UrlResolver.RequestFriend(friendId), (x) => { callback(x as BaseTransport); });
+        }
+        public void FriendReject(string friendId, Action<BaseTransport> callback)
+        {
+            Call("friend.reject", UrlResolver.RejectFriend(friendId), (x) => { callback(x as BaseTransport); });
+        }
+        public void FriendReject(string requestingFriend, string playerId, Action<BaseTransport> callback)
+        {
+            Call("friend.reject", UrlResolver.RejectFriend(requestingFriend, playerId), (x) => { callback(x as BaseTransport); });
+        }
+        public void FriendDelete(string friendId, Action<BaseTransport> callback)
+        {
+            Call("friend.delete", UrlResolver.DeleteFriend(friendId), (x) => { callback(x as BaseTransport); });
+        }
+        public void FriendAccept(string friendId, Action<BaseTransport> callback)
+        {
+            Call("friend.accept", UrlResolver.AcceptFriend(friendId), (x) => { callback(x as BaseTransport); });
+        }
+        public void FriendGet(Action<FriendListResult> callback)
+        {
+            Call("friend.get", UrlResolver.GetFriends(), (x) => { callback(x as FriendListResult); });
+        }
+        public void FriendGetGamesInCommon(string friendId, Action<GameListResult> callback)
+        {
+            Call("friend.games", UrlResolver.GetGamesInCommonWithFriend(friendId), (x) => { callback(x as GameListResult); });
         }
     }
 }

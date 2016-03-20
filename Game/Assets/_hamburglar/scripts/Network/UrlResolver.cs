@@ -95,6 +95,71 @@ namespace Hamburglar
                 GetVersionQueryString());
         }
 
+
+        public static string SearchPlayers(string search)
+        {
+            return string.Format("{0}players/{1}",
+                BaseURL,
+                search);
+        }
+        public static string RequestFriend(string friendId)
+        {
+            return string.Format("{0}friends/{1}/request/{2}",
+                BaseURL,
+                HamburglarContext.Instance.PlayerId,
+                friendId);
+        }
+        public static string RejectFriend(string friendId)
+        {
+            return string.Format("{0}friends/{1}/reject/{2}",
+                BaseURL,
+                HamburglarContext.Instance.PlayerId,
+                friendId);
+        }
+        public static string RejectFriend(string requestingFriendId, string playerId)
+        {
+            return string.Format("{0}friends/{1}/reject/{2}",
+                BaseURL,
+                playerId,
+                requestingFriendId);
+        }
+        public static string DeleteFriend(string friendId)
+        {
+            return string.Format("{0}friends/{1}/delete/{2}",
+                BaseURL,
+                HamburglarContext.Instance.PlayerId,
+                friendId);
+        }
+        public static string AcceptFriend(string friendId)
+        {
+            return string.Format("{0}friends/{1}/accept/{2}",
+                BaseURL,
+                HamburglarContext.Instance.PlayerId,
+                friendId);
+        }
+        public static string GetPendingFriends()
+        {
+            return string.Format("{0}friends/{1}/pending",
+                BaseURL,
+                HamburglarContext.Instance.PlayerId);
+        }
+        public static string GetFriends()
+        {
+            return string.Format("{0}friends/{1}",
+                BaseURL,
+                HamburglarContext.Instance.PlayerId);
+        }
+        public static string GetGamesInCommonWithFriend(string friendId)
+        {
+            return string.Format("{0}friends/{1}/games/{2}",
+                BaseURL,
+                HamburglarContext.Instance.PlayerId,
+                friendId);
+        }
+
+
+
+
         private static string GetVersionQueryString()
         {
             return string.Format("g={0}&p={1}&f={2}",

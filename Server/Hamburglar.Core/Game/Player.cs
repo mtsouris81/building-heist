@@ -15,6 +15,7 @@ namespace Hamburglar.Core
         public string ImageUrl { get; set; }
         public int Floor { get; set; }
         public int? Room { get; set; }
+        public int? UTCOffset { get; set; }
 
         public Player Clone()
         {
@@ -26,7 +27,8 @@ namespace Hamburglar.Core
                 Floor = this.Floor,
                 Room = this.Room,
                 ImageUrl = this.ImageUrl,
-                AuthToken = this.AuthToken
+                AuthToken = this.AuthToken,
+                UTCOffset = this.UTCOffset
             };
         }
 

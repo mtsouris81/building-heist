@@ -32,6 +32,9 @@ namespace Hamburglar.Core
             result.FloorVersions = game.floors.Select(x => x.v).ToArray();
             result.GameMetaVersion = game.game.v;
             result.PlayerVersions.Add(game.me.d.id, game.me.v);
+            result.StartUTC = game.game.d.start;
+            result.RunningState = game.game.d.state;
+
             return result;
         }
     }

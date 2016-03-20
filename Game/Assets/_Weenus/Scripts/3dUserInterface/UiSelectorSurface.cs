@@ -12,7 +12,7 @@ public class UiSelectorSurface : MonoBehaviour, IPointerDownHandler, IPointerUpH
     private float singlePointerDownTime = 0;
     private float clickThreshold = 0.2f;
     private float _rotationScale = 0.1f;
-    private bool isPointerDown;
+    protected bool isPointerDown;
     
     private float minDragThreshold = 20;
     private float totalDistanceTraveled;
@@ -44,6 +44,7 @@ public class UiSelectorSurface : MonoBehaviour, IPointerDownHandler, IPointerUpH
     public UiSelectable SelectedItem { get; set; }
     public bool IsDragging { get; set; }
     public bool IsRotating { get; private set; }
+    public bool IsPointerDown { get { return this.isPointerDown; } }
 
 	public virtual void Start () {
 
@@ -51,6 +52,19 @@ public class UiSelectorSurface : MonoBehaviour, IPointerDownHandler, IPointerUpH
         minCameraX = (CurrentCamera.transform.position - (CurrentCamera.transform.right * ConstrainRangeX)).x;
 
 	}
+
+    public Vector3 GetPointerPosition()
+    {
+        if (Mode == UiMode.TouchDevice)
+        {
+            Touch t = Input.GetTouch(pointerId);
+            return t.position;
+        }
+        else
+        {
+            return Input.mousePosition;
+        }
+    }
 
     public virtual void Update()
     {

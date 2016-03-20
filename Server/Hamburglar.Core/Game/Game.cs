@@ -11,6 +11,7 @@ namespace Hamburglar.Core
         public const int MAX_ITEMS_PER_ROOM = 5;
         public const int MAX_GAME_FLOORS = 25;
         public const int MAX_GAME_ROOMS_PER_FLOOR = 9;
+        public const float COUNTDOWN_TIME_SECONDS = 5;
 
         public static bool ActionsAffectScore = true;
         public static int PointsForKickOut = 5;
@@ -20,6 +21,8 @@ namespace Hamburglar.Core
         public string Title { get; set; }
         public int Floors { get; set; }
         public int RoomsPerFloor { get; set; }
+        public GameState RunningState { get; set; }
+        public DateTime? StartUTC { get; set; }
         public Player Creator { get; set; }
         public Player Winner { get; set; }
         public List<Player> Players { get; set; }
@@ -29,9 +32,10 @@ namespace Hamburglar.Core
         public int[] FloorVersions { get; set; }
         public Dictionary<string, int> PlayerVersions { get; set; }
         public Dictionary<string, int> PlayerScore { get; set; }
-
+        public List<string> JoinedPlayers { get; set; }
         public Game()
         {
+            JoinedPlayers = new List<string>();
             Players = new List<Player>();
             PlayerIds = new List<string>();
             PlayerScore = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
@@ -280,6 +284,28 @@ namespace Hamburglar.Core
             return OccupyRoomValidationResult.NotInRoom;
         }
 
+        public void Join(string playerId)
+        {
+            if (!JoinedPlayers.Contains(playerId))
+            {
+                JoinedPlayers.Add(playerId);
+            }
+        }
+        public bool HaveAllPlayersJoined()
+        {
+            foreach (var player in PlayerIds)
+            {
+                if (!JoinedPlayers.Contains(player))
+                    return false;
+            }
+            return true;
+        }
+        public void StartGame()
+        {
+            this.RunningState = GameState.GameReady;
+            this.StartUTC = DateTime.UtcNow;
+        }
+
         public static Game Create(Player owner, string title, int floors, int roomsPerFloor, List<Player> players)
         {
             if (floors > MAX_GAME_FLOORS)
@@ -302,7 +328,8 @@ namespace Hamburglar.Core
                 Building = Building.Generate(floors, roomsPerFloor, MAX_ITEMS_PER_ROOM, 10),
                 FloorVersions = new int[floors],
                 PlayerVersions = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase),
-                GameMetaVersion = 1
+                GameMetaVersion = 1,
+                RunningState = GameState.WaitingForAllToJoin
             };
             for (int i = 0; i < floors; i++)
             {

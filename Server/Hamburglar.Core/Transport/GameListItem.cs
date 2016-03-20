@@ -12,5 +12,9 @@ namespace Hamburglar.Core
         public string o { get; set; }
         public string t { get; set; }
     }
-
+    public class BaseTransport
+    {
+        public bool s { get; set; }
+        public string m { get; set; }
+    }
 }
